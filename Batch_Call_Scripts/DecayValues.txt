@@ -1,0 +1,14 @@
+numdecays_TPC="50000"
+factor_TPC="5"
+
+numdecays_HFE="50000"
+factor_HFE="1000"
+
+numdecays_InnerCryo="400000"
+factor_InnerCryo="2000"
+
+numdecays_OuterCryo="400000"
+factor_OuterCryo="3000"
+
+
+

@@ -1,0 +1,9 @@
+#!/bin/csh
+source $NEXOMC/env-rhel6-64.csh
+pushd /nfs/slac/g/exo/software/ROOT/rhel6/root/5.34.21/
+source bin/thisroot.csh
+popd
+cd $OUT_DIR
+time $NEXOMCBUILD/nEXO -m ./jobs_hold/runSEQNUM.in -r SEED >& $OUT_DIR/log/job-TYPE-runSEQNUM.log
+
+

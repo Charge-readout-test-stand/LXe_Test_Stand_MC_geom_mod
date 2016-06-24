@@ -1,0 +1,163 @@
+##########################################
+##                                      ##
+## Card to simulate U238  chain         ##
+## TPCVessel                            ##
+##                                      ##
+##########################################
+
+### Computing options ###
+
+FileNamePattern [OutputNamePrefix]_[ParentName]_[Isotope]_[Location]_seed[Seed]
+
+# On LLNL systems, use your own scratch folder or the nEXO shared scratch as 'FileTopDir'
+FileTopDir /p/lscratche/samuele/nEXOUsersScratch/Example
+
+# Location of executable
+BinTopDir /p/lscratche/samuele/nEXOUsersScratch/nEXO_MC-build
+
+# output directory of job scripts
+JobsFullOutputPath [FileTopDir]/jobs 
+
+# choose an identifier for this set of simulation, this starts the output file names
+JobsOutputNamePrefix Example 
+
+RunSimulation 1 # set 1 or 0 to run the simulation
+FullnEXOSimPath [BinTopDir]/nEXO
+
+RunClustering 1 # set 1 or 0 to run the clustering algorithm
+FullClusteringPath [BinTopDir]/SimulationScripts/Clustering.py
+
+RunReconstruction 1 # set 1 or 0 to run the reconstruction algorithm
+FullReconstructionPath [BinTopDir]/SimulationScripts/Reconstruction.py
+
+# On LLNL systems, this has no effect since you MUST use a scratch folder as FileTopDir
+# You will need to manually move results to a permanent storage area (e.g. HPSS)
+# !!! Do not change this parameter!!!
+UseScratchDir No 
+
+# Job submission command at LLNL
+BatchFarmCall "msub"  
+
+JobHeaderStart
+#!/bin/bash
+#MSUB -l walltime=12:00:00
+#MSUB -A afqn
+#MSUB -q pbatch
+#MSUB -m a
+#MSUB -V
+
+export STARTTIME=`date +%s`
+echo Start time $STARTTIME
+
+JobHeaderEnd
+
+# environment setup file
+SetupFile /g/g21/micahj/Geant/nEXO_MC/msj_setup.sh
+
+#JobFooterStart
+export STOPTIME=`date +%s`
+echo Stop time $STOPTIME
+export DT=`expr $STOPTIME - $STARTTIME`
+echo CPU time: $DT seconds
+#JobFooterEnd
+
+TotalNumberOfEvents 10000    # number of total simulated events per isotope per location
+NumberOfJobs 10                # number of jobs per isotope per location
+StartRandomSeed 1               # start seed number
+
+### G4 simulation options ###
+
+G4FullOutputPath [FileTopDir]/g4 # output directory of job scripts, macros and files
+MacrosFullOutputPath [FileTopDir]/g4 # (optional) output directory of macros. If omitted, G4FullOutputPath is used.
+G4OutputNamePrefix Example # choose an identifier for this set of simulation, this starts the output file names
+
+G4TreeName g4Tree
+
+ParentName U238                               # identifier of decay chain, only goes to file name
+DecayChainList Pa234,Ra226,Pb214,Bi214,Tl210  # list of elements in decay chain, should be separated by comma and no spaces
+BranchRatioList 1,1,1,1,1                     # branch ratio of above elements
+
+LocationType ScriptConfinement
+LocationList /nEXO/TPCVessel      # list of locations to simulate the isotopes
+
+MacroModelStart
+
+/nEXO/det/checkOverlap false
+
+/nEXO/TPCVessel/tpcLowerRadius 650 mm
+/nEXO/TPCInternals/wwDistance 20 mm
+/nEXO/TPCInternals/fieldRingRef 0.0
+/nEXO/TPCInternals/anodeRef 1.0
+/nEXO/TPCInternals/cathodeRef 1.0
+/nEXO/TPCInternals/bulgeRef 1.0
+/nEXO/TPCInternals/activeSiPMPadFrac 1.0
+/nEXO/TPCInternals/ringArrangeID 0
+/nEXO/TPCInternals/fieldRingLength 10 mm
+/nEXO/TPCInternals/fieldRingThick 1 mm
+/nEXO/TPCInternals/ringSideDistance 30.85 mm
+/nEXO/TPCInternals/radialRingDistance 6 mm
+
+/nEXO/TPCInternals/internalsFlag 1
+
+/nEXO/TPCExternals/setVersion 2 
+
+/run/initialize
+
+/EXOPhysicsList/cutValueInnerRegion 1 mm
+/EXOPhysicsList/cutValueInsideTPC 0.1 mm
+
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/grdm/verbose 0
+
+/generator/setGenerator gps
+
+MacroModelEnd
+
+### Clustering options ###
+
+ClusterFullOutputPath [FileTopDir]/cluster # output directory of job scripts, macros and files
+ClusterOutputNamePrefix Example # choose an identifier for this set of simulation, this starts the output file names
+
+ClusterTreeName clusterTree
+ClusterNevents all    # one integer number or 'all'
+
+LXeCenterX 0              # set X center of LXe in mm 
+LXeCenterY 0              # set Y center of LXe in mm 
+LXeCenterZ -403           # set Z center of LXe in mm 
+
+ClusterDiameter 3         # cluster diameter in mm
+
+AxialCoordinate Z         # define along which direction is the cylinder axis
+
+UseActiveLXe 1            # set 1 to apply active LXe cut to G4 deposits
+ActiveLXeRadius 628.      # radius of active LXe in mm
+ActiveLXeMinAxial -631.        # start z of active LXe in mm
+ActiveLXeMaxAxial 631.        # end z of active LXe in mm
+
+
+### Reconstruction options ###
+
+ReconFullOutputPath [FileTopDir]/recon # output directory of job scripts, macros and files
+ReconOutputNamePrefix Example # choose an identifier for this set of simulation, this starts the output file names
+
+ReconTreeName reconTree
+ReconstructNevents all    # one integer number or 'all'
+
+LXeRadius 650.            # set radius of the LXe volume
+LXeHalfLength 650.        # set the half length of the LXe volume
+
+UseFV 1                   # set 1 to apply FV cut (assumed to be a cylinder)
+FidVolRadius 628. #373.4 #592.7        # radius of FV in mm, examples for n tonnes use radius = n^1/3 * 373.4 mm 
+FidVolMinAxial -631. #-373.4 #-592.7         # start z of FV in mm
+FidVolMaxAxial 631. #373.4 #592.7          # end z of FV in mm
+
+Uthreshold 75.            # U-threshold in keV
+Vthreshold 250.           # V-threshold in keV
+
+ResolSS "TMath::Sqrt([0]*[0]*x + [1]*[1] + [2]*[2]*x*x)"   # resolution string for SS events
+ResolPss 0.,36.9,8.8e-3                                    # resolution parameters for SS events (list should contain correct number of elements as defined string requires)
+ResolMS "TMath::Sqrt([0]*[0]*x + [1]*[1] + [2]*[2]*x*x)"   # resolution string for MS events
+ResolPms 0,41.08,9.6e-3                                    # resolution parameters for MS events (list should contain correct number of elements as defined string requires)
+ResolScale 0.5988                                          # factor to scale resolution, e.g. 1.5/1.67 = 0.8982

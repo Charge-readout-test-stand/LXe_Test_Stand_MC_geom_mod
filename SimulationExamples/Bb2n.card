@@ -1,0 +1,147 @@
+##########################################
+##                                      ##
+## Card to simulate bb2n decay          ##
+##                                      ##
+##########################################
+
+### Computing options ###
+
+FileNamePattern [OutputNamePrefix]_[Isotope]_[Location]_seed[Seed]
+FileTopDir /data/data033/exo/data/nEXO/kevin/tests
+BinTopDir /data/data033/exo/software/nEXO_MC/kevin-build
+
+JobsFullOutputPath [FileTopDir]/jobs # output directory of job scripts, macros and files
+JobsOutputNamePrefix Test # choose an identifier for this set of simulation, this starts the output file names
+
+RunSimulation 1 # set 1 or 0 to run the simulation
+FullnEXOSimPath [BinTopDir]/nEXO
+
+RunClustering 1 # set 1 or 0 to run the clustering algorithm
+FullClusteringPath [BinTopDir]/SimulationScripts/Clustering.py
+
+RunReconstruction 1 # set 1 or 0 to run the reconstruction algorithm
+FullReconstructionPath [BinTopDir]/SimulationScripts/Reconstruction.py
+
+UseScratchDir No # (optional) To use scratch directory, set to the full path of the scratch dir, e.g. "/scratch/nEXO_[ParentName]_[Isotope]_[Location]_seed[Seed]"
+
+#BatchFarmCall "bsub -q xlong -R rhel60"  # SLAC command to submit jobs
+BatchFarmCall "qsub -q atlas.q"  # submit jobs at Carleton
+
+JobHeaderStart
+#!/bin/sh
+#$ -S /bin/sh
+
+if [ -f /usr/local/sge/boson_nest/common/settings.sh ];
+then
+    source /usr/local/sge/boson_nest/common/settings.sh
+fi
+
+JobHeaderEnd
+
+SetupFile /data/data033/exo/software/nEXO_MC/setup.sh # environment setup file
+
+TotalNumberOfEvents 1000       # number of total simulated events per isotope per location
+NumberOfJobs 1                  # number of jobs per isotope per location
+StartRandomSeed 1               # start seed number
+
+### G4 simulation options ###
+
+G4FullOutputPath [FileTopDir]/g4 # output directory of job scripts, macros and files
+MacrosFullOutputPath [FileTopDir]/g4 # (optional) output directory of macros. If omitted, G4FullOutputPath is used.
+G4OutputNamePrefix Test # choose an identifier for this set of simulation, this starts the output file names
+
+G4TreeName g4Tree
+
+ParentName bb2n                 # identifier of decay chain
+DecayChainList bb2n             # list of elements in decay chain, should be separated by comma and no spaces
+BranchRatioList 1               # branch ratio of above elements
+
+LocationType LocationMacro # types = ScriptConfinement, ScriptDefinition, LocationMacro
+LocationList LXeRegion    # list of locations to simulate the isotopes, should be separated by comma and no spaces
+
+LXeRegionStart
+
+# No location is required for bb2n and bb0n particle generators. They automatically select the full LXe region to occur.
+
+LXeRegionEnd
+
+
+MacroModelStart
+
+/nEXO/det/checkOverlap false
+
+/nEXO/TPCVessel/tpcLowerRadius 650 mm
+/nEXO/TPCInternals/wwDistance 20 mm
+/nEXO/TPCInternals/fieldRingRef 0.0
+/nEXO/TPCInternals/anodeRef 1.0
+/nEXO/TPCInternals/cathodeRef 1.0
+/nEXO/TPCInternals/bulgeRef 1.0
+/nEXO/TPCInternals/activeSiPMPadFrac 1.0
+/nEXO/TPCInternals/ringArrangeID 0
+/nEXO/TPCInternals/fieldRingLength 10 mm
+/nEXO/TPCInternals/fieldRingThick 1 mm
+/nEXO/TPCInternals/ringSideDistance 30.85 mm
+/nEXO/TPCInternals/radialRingDistance 6 mm
+
+/nEXO/TPCInternals/internalsFlag 1
+
+/nEXO/TPCExternals/setVersion 2 
+
+/run/initialize
+
+#/EXOPhysicsList/defaultCutValue 10 mm
+#/EXOPhysicsList/cutValueInnerRegion 1 mm
+#/EXOPhysicsList/cutValueInsideTPC 0.1 mm
+
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/grdm/verbose 0
+
+MacroModelEnd
+
+### Clustering options ###
+
+ClusterFullOutputPath [FileTopDir]/cluster # output directory of job scripts, macros and files
+ClusterOutputNamePrefix Test # choose an identifier for this set of simulation, this starts the output file names
+
+ClusterTreeName clusterTree
+ClusterNevents all    # one integer number or 'all'
+
+LXeCenterX 0              # set X center of LXe in mm 
+LXeCenterY 0              # set Y center of LXe in mm 
+LXeCenterZ -403           # set Z center of LXe in mm 
+
+ClusterDiameter 3         # cluster diameter in mm
+
+AxialCoordinate Z         # define along which direction is the cylinder axis
+
+UseActiveLXe 1            # set 1 to apply active LXe cut to G4 deposits
+ActiveLXeRadius 628.      # radius of active LXe in mm
+ActiveLXeMinAxial -631.        # start z of active LXe in mm
+ActiveLXeMaxAxial 631.        # end z of active LXe in mm
+
+### Reconstruction options ###
+
+ReconFullOutputPath [FileTopDir]/recon # output directory of job scripts, macros and files
+ReconOutputNamePrefix Test # choose an identifier for this set of simulation, this starts the output file names
+
+ReconTreeName reconTree
+ReconstructNevents all    # one integer number or 'all'
+
+LXeRadius 650.            # set radius of the LXe volume
+LXeHalfLength 650.        # set the half length of the LXe volume
+
+UseFV 1                   # set 1 to apply FV cut (assumed to be a cylinder)
+FidVolRadius 592.7        # radius of FV in mm, examples for n tonnes use radius = n^1/3 * 373.4 mm 
+FidVolMinAxial -592.7         # start z of FV in mm
+FidVolMaxAxial 592.7          # end z of FV in mm
+
+Uthreshold 75.            # U-threshold in keV
+Vthreshold 250.           # V-threshold in keV
+
+ResolSS "TMath::Sqrt([0]*[0]*x + [1]*[1] + [2]*[2]*x*x)"   # resolution string for SS events
+ResolPss 0.,36.9,8.8e-3                                    # resolution parameters for SS events (list should contain correct number of elements as defined string requires)
+ResolMS "TMath::Sqrt([0]*[0]*x + [1]*[1] + [2]*[2]*x*x)"   # resolution string for MS events
+ResolPms 0,41.08,9.6e-3                                    # resolution parameters for MS events (list should contain correct number of elements as defined string requires)
+ResolScale 0.8982                                          # factor to scale resolution, e.g. 1.5/1.67 = 0.8982

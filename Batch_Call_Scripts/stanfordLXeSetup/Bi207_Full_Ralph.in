@@ -1,0 +1,118 @@
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+#/event/verbose 1
+#/tracking/verbose 1
+
+##########################
+# Detector Construction
+#
+# Check overlaps during all G4PVPlacements
+/nEXO/det/checkOverlap false
+#
+# Set the max step length in TPCRegion and inner cryostat
+/nEXO/WorldDimension 10 m
+/nEXO/TPCExternals/LabDimension 10 m
+/nEXO/TPCExternals/setVersion 3
+/nEXO/TPCExternals/HFERadius 200 mm
+/nEXO/TPCExternals/HFEHeight 640 mm
+/nEXO/TPCExternals/HFEDewarThickness 30 mm
+/nEXO/TPCVessel/tpcVesselOption 2
+/nEXO/TPCVessel/tpcRadiusTestStand 125 mm
+/nEXO/TPCVessel/tpcHeightTestStand 20 mm
+/nEXO/TPCVessel/tpcThicknessTestStand 2 mm
+/nEXO/TPCInternals/internalsFlag 0
+/nEXO/TPCInternals/LXe/ActiveWidthTestStand 100 mm
+/nEXO/TPCInternals/LXe/ActiveLengthTestStand 100 mm
+/nEXO/TPCInternals/LXe/ActiveHeightTestStand 9.08 mm
+
+
+
+###########################
+# Physics List
+#
+# Set the charge particle max step length anywhere
+#/nEXO/phys/stepMax 1 m
+#
+# Sets the pi+ to decay into e+, nu
+#/decay/pienu
+#
+# Sets the pi+ to decay into mu+, nu
+#/decay/pimunu
+##
+##########################
+# Choose PrimaryGenerator
+#
+#/generator/setGenerator gun
+/generator/setGenerator gps
+
+##########################
+# Initialisation procedure
+#
+/run/initialize
+
+# turn up verbosity for NEST process:
+#/process/setVerbose 1 S1
+
+# print out a text "visualization":
+#/vis/scene/create
+#/vis/open ATree
+#/vis/ASCIITree/verbose 3
+#/vis/drawTree
+
+
+##########################
+# Set the production cuts
+#
+#/run/setCut 10.0 mm
+
+#/run/setCutForAGivenParticle e- 10.0 mm
+#/run/setCutForAGivenParticle e+ 10.0 mm
+#/run/setCutForAGivenParticle gamma 10.0 mm
+#/run/setCutForAGivenParticle proton 10.0 mm
+
+# Note: this overwrites any cuts per particle and region set in SetCuts()!
+#
+#/run/setCutForRegion TPCRegion 100.0 nm
+#/run/setCutForRegion CryostatRegion 1.0 mm
+
+/EXOPhysicsList/cutValueInsideTPC 100.0 nm
+/EXOPhysicsList/cutValueInnerRegion 1.0 mm
+
+/analysis/setOutputROOTFileName mc/runSEQNUM.root
+#/analysis/setOutputROOTFileOption UPDATE
+/analysis/setOutputROOTTreeName nEXOevents
+/analysis/setPropagateOP 0
+/analysis/setPropagateTE 0
+/analysis/setSaveOP 0
+/analysis/setSaveTE 1
+/analysis/setSaveOnlyEventsWithDeposits 0
+
+# https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html
+
+# source on cathode
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/radius 2.0 mm
+#/gps/pos/centre 0. 0. 0. mm # for testing
+#/gps/pos/centre 36. 24. 0. mm # 6th LXe X27/X28=26/27, Y23/Y24=52/53
+#/gps/pos/centre 4.5 4.5 0. mm # 7th LXe X17, Y17
+/gps/pos/centre 5.3 5.3 0. mm # 7th LXe X17, Y17
+/gps/ang/type iso 
+
+# 207-Bi
+/gps/energy 0. keV
+/gps/particle ion
+/gps/ion 83 207 0 0
+
+/gps/source/list 
+/grdm/analogueMC 1
+#/run/beamOn 100 # testing
+/run/beamOn 500 # ~1 hr total with diff coeff 50, or 10 min with diff coeff 0
+#/run/beamOn 4000 
+
+
+
+
+
