@@ -97,7 +97,11 @@ G4LogicalVolume* nEXOLXeConstructor::GetPiece(void)
 
     G4String activeLXeName = GetName() + "/ActiveRegion";
 
-    G4cout << "Active LXe for the Test Stand Using R1 =" << fActiveLengthTestStand << " L = " << fActiveHeightTestStand << G4endl;
+    
+
+// hi
+
+G4cout << "Active LXe for the Test Stand Using R1 =" << fActiveLengthTestStand << " L = " << fActiveHeightTestStand << G4endl;
  
     //G4Tubs* mainLXeActive = new G4Tubs(activeLXeName, 0,  GetActiveLXeRadius1(), GetActiveLXeLength(), 0, 360*deg);
 
