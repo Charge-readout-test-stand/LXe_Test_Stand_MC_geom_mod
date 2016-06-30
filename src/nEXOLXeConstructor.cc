@@ -86,33 +86,54 @@ G4LogicalVolume* nEXOLXeConstructor::GetPiece(void)
 
     G4cout << "LXe for the Test Stand Using R1 =" << GetRadius1() << " L = " << GetLength()   << G4endl;
 
-    G4Tubs* mainLXeAll = new G4Tubs(GetName(), 0,  GetRadius1(), GetLength(), 0, 360*deg);
+    G4Tubs* mainLXeAll = new G4Tubs(GetName(), 0,  125.475*mm, 39.27*mm, 0, 360*deg);
 
     logicLXe = new G4LogicalVolume(mainLXeAll, FindMaterial("liquidXe"), GetName());
 
+/* Added lower cylinder of inactive LXe 
+G4String inactiveLXeLower = GetName() + "/inactiveLXeLowerRegion";
     
+    G4Tubs* inactiveLXeLower1  = new G4Tubs(inactiveLXeLower, 0*mm, 50.8*mm, 22.895*mm, 0, 360*deg);
+
+    G4LogicalVolume* logicinactiveLXeLower = new G4LogicalVolume(inactiveLXeLower1, FindMaterial("liquidXe"), inactiveLXeLower);
+
+    G4VPhysicalVolume* physinactiveLXeLower = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, -60.165*mm),
+                                                       logicinactiveLXeLower,
+                                                       inactiveLXeLower,
+                                                       logicLXe,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inactiveLXeLower, physinactiveLXeLower);
+/*  Lower cylinder color 
+G4VisAttributes* LowerAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
+logicinactiveLXeLower->SetVisAttributes(LowerAtt);
+/* Joining lower inactive LXe cyl with mainLXe 
+G4UnionSolid* inactiveLXe = new G4UnionSolid("mainLXe+inactiveLXeLower", mainLXeAll, inactiveLXeLower1);
+logicinactiveLXeLower = new G4LogicalVolume(inactiveLXe, FindMaterial("liquidXe"), GetName());
+*/
     G4cout << "//################################################//" << G4endl;
     G4cout << "//############### Test Stand Active Liquid Xe ###############//" << G4endl;
     G4cout << "//################################################//" << G4endl;
 
-    G4String activeLXeName = GetName() + "/ActiveRegion";
+/* Active LXe region */    
+G4String activeLXeName = GetName() + "/ActiveRegion";
 
     
-
-// hi
-
 G4cout << "Active LXe for the Test Stand Using R1 =" << fActiveLengthTestStand << " L = " << fActiveHeightTestStand << G4endl;
  
     //G4Tubs* mainLXeActive = new G4Tubs(activeLXeName, 0,  GetActiveLXeRadius1(), GetActiveLXeLength(), 0, 360*deg);
 
     //G4Box* mainLXeActive = new G4Box(activeLXeName, fActiveLengthTestStand, fActiveWidthTestStand, fActiveHeightTestStand);
-    
-    G4Tubs* mainLXeActive = new G4Tubs(activeLXeName, 0, fActiveLengthTestStand, fActiveHeightTestStand, 0, 360*deg);
+   
+
+    G4Tubs* mainLXeActive = new G4Tubs(activeLXeName, 0, 105*mm, 9.38*mm, 0, 360*deg);
 
     G4LogicalVolume* logicActiveLXe = new G4LogicalVolume(mainLXeActive, FindMaterial("liquidXe"), activeLXeName);
 
     G4VPhysicalVolume* physActiveLXe = new G4PVPlacement(0,
-                                                       G4ThreeVector(),
+                                                       G4ThreeVector(0, 0, -21.57*mm),
                                                        logicActiveLXe,
                                                        activeLXeName,
                                                        logicLXe,
@@ -121,6 +142,76 @@ G4cout << "Active LXe for the Test Stand Using R1 =" << fActiveLengthTestStand <
                                                        fCheckOverlaps);
 
     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(activeLXeName, physActiveLXe);
+
+/* Added anode disk and quartz tile */
+G4String AnodeDisk = GetName() + "/AnodeDiskRegion";
+    
+    G4Tubs* AnodeDisk1  = new G4Tubs(AnodeDisk, 0*mm, 101.6*mm, 3.175*mm, 0, 360*deg);
+
+    G4LogicalVolume* logicAnodeDisk = new G4LogicalVolume(AnodeDisk1, FindMaterial("G4_STAINLESS-STEEL"), AnodeDisk);
+
+    G4VPhysicalVolume* physAnodeDisk = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, 12.555*mm),
+                                                       logicAnodeDisk,
+                                                       AnodeDisk,
+                                                       logicActiveLXe,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(AnodeDisk, physAnodeDisk);
+
+G4String QuartzTile = GetName() + "/QuartzTileRegion";
+	G4Box* QuartzTile1 = new G4Box(QuartzTile, 50.8*mm, 50.8*mm, 3.175*mm);
+	G4LogicalVolume* logicQuartzTile = new G4LogicalVolume(QuartzTile1, FindMaterial("G4_SILICON_DIOXIDE"), QuartzTile);
+	G4VPhysicalVolume* physQuartzTile = new G4PVPlacement (0,
+							G4ThreeVector(),
+							logicQuartzTile, 
+							QuartzTile, 
+							logicAnodeDisk, 
+							false, 
+							0, 
+							fCheckOverlaps);
+     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(QuartzTile, physQuartzTile);
+  
+G4VisAttributes* AnodeDiskAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+logicAnodeDisk->SetVisAttributes(AnodeDiskAtt);
+G4VisAttributes* QuartzTileAtt = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
+logicQuartzTile->SetVisAttributes(QuartzTileAtt); 
+
+/* Added cathode rings */
+G4String CathodeRingUpper = GetName() + "/CathodeUpperRegion";
+    
+    G4Tubs* CathodeRingUpper1  = new G4Tubs(CathodeRingUpper, 76.2*mm, 99.06*mm, 0.795*mm, 0, 360*deg);
+
+    G4LogicalVolume* logicCathodeUpper = new G4LogicalVolume(CathodeRingUpper1, FindMaterial("G4_STAINLESS-STEEL"), CathodeRingUpper);
+
+    G4VPhysicalVolume* physCathodeUpper = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, -9.28*mm),
+                                                       logicCathodeUpper,
+                                                       CathodeRingUpper,
+                                                       logicActiveLXe,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(CathodeRingUpper, physCathodeUpper);
+
+
+G4String CathodeRingLower = GetName() + "/CathodeLowerRegion";
+    
+    G4Tubs* CathodeRingLower1  = new G4Tubs(CathodeRingLower, 76.2*mm, 99.06*mm, 1.27*mm, 0, 360*deg);
+
+    G4LogicalVolume* logicCathodeLower = new G4LogicalVolume(CathodeRingLower1, FindMaterial("G4_STAINLESS-STEEL"), CathodeRingLower);
+
+    G4VPhysicalVolume* physCathodeLower = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, -9.48*mm),
+                                                       logicCathodeLower,
+                                                       CathodeRingLower,
+                                                       logicActiveLXe,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(CathodeRingLower, physCathodeLower);
+
 
     //Attributes of the LXe
     G4VisAttributes* XeAtt = new G4VisAttributes(G4Colour(1.0, 0, 1.0));
