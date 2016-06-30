@@ -84,6 +84,8 @@ G4LogicalVolume* nEXOLXeConstructor::GetPiece(void)
 
   if(fOption == 2) {
 
+/* Inactive LXe region */
+
     G4cout << "LXe for the Test Stand Using R1 =" << GetRadius1() << " L = " << GetLength()   << G4endl;
 
     G4Tubs* mainLXeAll = new G4Tubs(GetName(), 0,  125.475*mm, 39.27*mm, 0, 360*deg);
@@ -96,29 +98,27 @@ G4String inactiveLXeLower = GetName() + "/inactiveLXeLowerRegion";
 
     logicLXe = new G4LogicalVolume(inactiveLXe, FindMaterial("liquidXe"), GetName());
 
-/* Added lower cylinder of inactive LXe */ 
-   
-    //    G4LogicalVolume* logicinactiveLXeLower = new G4LogicalVolume(inactiveLXeLower1, FindMaterial("liquidXe"), inactiveLXeLower);
-
-/*    G4VPhysicalVolume* physinactiveLXeLower = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, -60.165*mm),
-                                                       logicinactiveLXeLower,
-                                                       inactiveLXeLower,
-                                                       logicLXe,
-                                                       false,
-                                                       0,
-                                                       fCheckOverlaps);
-    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inactiveLXeLower, physinactiveLXeLower); */
-
-/*  Lower cylinder color */
-//G4VisAttributes* LowerAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
-//logicinactiveLXeLower->SetVisAttributes(LowerAtt);
-/* Joining lower inactive LXe cyl with mainLXe */
-//logicinactiveLXeLower = new G4LogicalVolume(inactiveLXe, FindMaterial("liquidXe"), GetName());
-
     G4cout << "//################################################//" << G4endl;
     G4cout << "//############### Test Stand Active Liquid Xe ###############//" << G4endl;
     G4cout << "//################################################//" << G4endl;
+
+		/* TPC Vessel declare (to make TPC mother of inactiveLXe) 
+       G4Tubs* mainTPC = new G4Tubs("mainTPC", 0,  152.02*mm, 64.39*mm, 0, 360*deg);
+       logicTPC =  new G4LogicalVolume(mainTPC,
+                                    FindMaterial("G4_STAINLESS-STEEL"),
+                                    GetName());
+
+    G4VPhysicalVolume* physinactiveLXe = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, 0),
+                                                       logicinactiveLXeLower,
+                                                       inactiveLXe,
+                                                       logicTPC,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+	nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inactiveLXe, physinactiveLXe);
+*/
+
 
 /* Active LXe region */    
 G4String activeLXeName = GetName() + "/ActiveRegion";
@@ -223,8 +223,8 @@ G4String CathodeRingLower = GetName() + "/CathodeLowerRegion";
     logicLXe->SetVisAttributes(XeAtt);
     //logicActiveLXe->SetVisAttributes(XeAtt);
     
-   // return logicLXe;
- // }
+  return logicLXe;
+  }
 
   G4cout << "//################################################//" << G4endl;
   G4cout << "//############### Active Liquid Xe ###############//" << G4endl;
@@ -273,4 +273,4 @@ G4String CathodeRingLower = GetName() + "/CathodeLowerRegion";
   G4cout << "Got To end of Making LXe" << G4endl;
   return logicLXe;
 }
-}
+
