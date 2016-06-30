@@ -90,14 +90,14 @@ G4LogicalVolume* nEXOLXeConstructor::GetPiece(void)
 
     logicLXe = new G4LogicalVolume(mainLXeAll, FindMaterial("liquidXe"), GetName());
 
-/* Added lower cylinder of inactive LXe 
+/* Added lower cylinder of inactive LXe */ 
 G4String inactiveLXeLower = GetName() + "/inactiveLXeLowerRegion";
     
     G4Tubs* inactiveLXeLower1  = new G4Tubs(inactiveLXeLower, 0*mm, 50.8*mm, 22.895*mm, 0, 360*deg);
 
     G4LogicalVolume* logicinactiveLXeLower = new G4LogicalVolume(inactiveLXeLower1, FindMaterial("liquidXe"), inactiveLXeLower);
 
-    G4VPhysicalVolume* physinactiveLXeLower = new G4PVPlacement(0,
+/*    G4VPhysicalVolume* physinactiveLXeLower = new G4PVPlacement(0,
                                                        G4ThreeVector(0, 0, -60.165*mm),
                                                        logicinactiveLXeLower,
                                                        inactiveLXeLower,
@@ -105,14 +105,15 @@ G4String inactiveLXeLower = GetName() + "/inactiveLXeLowerRegion";
                                                        false,
                                                        0,
                                                        fCheckOverlaps);
-    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inactiveLXeLower, physinactiveLXeLower);
-/*  Lower cylinder color 
+    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inactiveLXeLower, physinactiveLXeLower); */
+
+/*  Lower cylinder color */
 G4VisAttributes* LowerAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
 logicinactiveLXeLower->SetVisAttributes(LowerAtt);
-/* Joining lower inactive LXe cyl with mainLXe 
-G4UnionSolid* inactiveLXe = new G4UnionSolid("mainLXe+inactiveLXeLower", mainLXeAll, inactiveLXeLower1);
+/* Joining lower inactive LXe cyl with mainLXe */
+G4UnionSolid* inactiveLXe = new G4UnionSolid("mainLXe+inactiveLXeLower", mainLXeAll, inactiveLXeLower1, 0, G4ThreeVector(0, 0, -60.165*mm));
 logicinactiveLXeLower = new G4LogicalVolume(inactiveLXe, FindMaterial("liquidXe"), GetName());
-*/
+
     G4cout << "//################################################//" << G4endl;
     G4cout << "//############### Test Stand Active Liquid Xe ###############//" << G4endl;
     G4cout << "//################################################//" << G4endl;
