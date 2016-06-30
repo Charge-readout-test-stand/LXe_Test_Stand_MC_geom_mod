@@ -963,20 +963,20 @@ G4LogicalVolume* nEXOTPCExternalsConstructor::GetPieceTestStand(G4LogicalVolume 
   nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inCryoName,physInCryo);
   logicInCryo->SetVisAttributes(inCryoAtt);
   
-    G4Tubs* mainLXeAll = new G4Tubs(GetName(), 0,  125.475*mm, 39.27*mm, 0, 360*deg);
+//    G4Tubs* mainLXeAll = new G4Tubs(GetName(), 0,  125.475*mm, 39.27*mm, 0, 360*deg);
 
-/* Added lower cylinder of inactive LXe */
+/* Added lower cylinder of inactive LXe 
 G4String inactiveLXeLower = GetName() + "/inactiveLXeLowerRegion";
     
     G4Tubs* inactiveLXeLower1  = new G4Tubs(inactiveLXeLower, 0*mm, 50.8*mm, 21.895*mm, 0, 360*deg);
 
     G4LogicalVolume* logicinactiveLXeLower = new G4LogicalVolume(inactiveLXeLower1, FindMaterial("liquidXe"), inactiveLXeLower);
 
-/* Lower cylinder color */
+/* Lower cylinder color 
 G4VisAttributes* LowerAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
 logicinactiveLXeLower->SetVisAttributes(LowerAtt);
 
-/*  Joining lower inactive LXe cyl with mainLXe */
+/*  Joining lower inactive LXe cyl with mainLXe 
 G4String inactiveLXe = GetName() + "/inactiveLXeRegion";
 
 	G4UnionSolid* inactiveLXe1 = new G4UnionSolid("mainLXe+inactiveLXeLower", mainLXeAll, inactiveLXeLower1, 0,  G4ThreeVector(0, 0, -61.165*mm));
