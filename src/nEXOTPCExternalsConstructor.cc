@@ -1,5 +1,8 @@
 #include "nEXOTPCExternalsConstructor.hh"
-
+#include "G4UnionSolid.hh" 
+#include "nEXOLXeConstructor.hh"
+#include "nEXOTPCInternalsConstructor.hh"
+#include "nEXOTPCVesselConstructor.hh"
 
 class nEXOTPCExternalsMessenger : public nEXOModuleConstructorMessenger
 {
@@ -435,7 +438,7 @@ G4LogicalVolume* nEXOTPCExternalsConstructor::GetPieceOld(G4LogicalVolume *logic
   G4LogicalVolume* logicSurroundRock = new G4LogicalVolume(new G4Tubs(surroundRockName,
                                                                       0, surroundRockR,
                                                                       surroundRockH,
-                                                                      0, 360*deg),
+								      0, 360*deg),
                                                            FindMaterial("Rock"),
                                                            surroundRockName);
 
@@ -959,9 +962,53 @@ G4LogicalVolume* nEXOTPCExternalsConstructor::GetPieceTestStand(G4LogicalVolume 
 
   nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inCryoName,physInCryo);
   logicInCryo->SetVisAttributes(inCryoAtt);
+  
+    G4Tubs* mainLXeAll = new G4Tubs(GetName(), 0,  125.475*mm, 39.27*mm, 0, 360*deg);
 
+/* Added lower cylinder of inactive LXe */
+G4String inactiveLXeLower = GetName() + "/inactiveLXeLowerRegion";
+    
+    G4Tubs* inactiveLXeLower1  = new G4Tubs(inactiveLXeLower, 0*mm, 50.8*mm, 21.895*mm, 0, 360*deg);
 
+    G4LogicalVolume* logicinactiveLXeLower = new G4LogicalVolume(inactiveLXeLower1, FindMaterial("liquidXe"), inactiveLXeLower);
 
+/* Lower cylinder color */
+G4VisAttributes* LowerAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
+logicinactiveLXeLower->SetVisAttributes(LowerAtt);
+
+/*  Joining lower inactive LXe cyl with mainLXe */
+G4String inactiveLXe = GetName() + "/inactiveLXeRegion";
+
+	G4UnionSolid* inactiveLXe1 = new G4UnionSolid("mainLXe+inactiveLXeLower", mainLXeAll, inactiveLXeLower1, 0,  G4ThreeVector(0, 0, -61.165*mm));
+
+	G4LogicalVolume* logicinactiveLXe = new G4LogicalVolume(inactiveLXe1, FindMaterial("liquidXe"), inactiveLXe);
+
+	G4VPhysicalVolume* physinactiveLXe = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, 0),
+                                                       logicinactiveLXe,
+                                                       inactiveLXe,
+                                                       logicInCryo,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inactiveLXe, physinactiveLXe);
+
+		/* TPC Vessel declare (to make TPC mother of inactiveLXe) 
+       G4Tubs* mainTPC = new G4Tubs("mainTPC", 0,  152.02*mm, 64.39*mm, 0, 360*deg);
+       logicTPC =  new G4LogicalVolume(mainTPC,
+                                    FindMaterial("G4_STAINLESS-STEEL"),
+                                    GetName());
+
+    G4VPhysicalVolume* physinactiveLXe = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, 0),
+                                                       logicinactiveLXeLower,
+                                                       inactiveLXe,
+                                                       logicTPC,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+	nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inactiveLXe, physinactiveLXe);
+*/
   G4cout << "//************************************************//" << G4endl;
   G4cout << "//******************** HFE ***********************//" << G4endl;
   G4cout << "//************************************************//" << G4endl;
@@ -994,7 +1041,24 @@ G4LogicalVolume* nEXOTPCExternalsConstructor::GetPieceTestStand(G4LogicalVolume 
 
   fTPCVesselMotherVolume = logicHFE;
  
+/* Added 'pancake end' to bottm of TPC Vessel */
+G4String PancakeEnd = GetName() + "/PancakeEndRegion";
+    
+    G4Tubs* PancakeEnd1  = new G4Tubs(PancakeEnd, 50.8*mm, 76.8*mm, 10*mm, 0, 360*deg);
 
+    G4LogicalVolume* logicPancakeEnd = new G4LogicalVolume(PancakeEnd1, FindMaterial("G4_STAINLESS-STEEL"), PancakeEnd);
+
+    G4VPhysicalVolume* physPancakeEnd = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, -74.39*mm),
+                                                       logicPancakeEnd,
+                                                       PancakeEnd,
+                                                       logicHFE,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+  nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(PancakeEnd, physPancakeEnd);
+
+   
   G4Region*  CryostatRegion = new G4Region("CryostatRegion");
   CryostatRegion->AddRootLogicalVolume(logicOutCryo);
 
