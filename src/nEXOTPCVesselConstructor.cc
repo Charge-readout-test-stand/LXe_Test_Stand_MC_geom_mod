@@ -125,6 +125,25 @@ G4String RightCutOut = GetName() + "/RightCutOutRegion";
   CutOutAtt->SetVisibility(false);
   logicRightCutOut->SetVisAttributes(CutOutAtt);
 
+G4String LeftCutOut = GetName() + "/LeftCutOutRegion";
+    
+    G4Box* LeftCutOut1  = new G4Box(LeftCutOut, 13.27*mm, 12.56*mm, 13.27*mm);
+
+    G4LogicalVolume* logicLeftCutOut = new G4LogicalVolume(LeftCutOut1, FindMaterial("G4_AIR"), LeftCutOut);
+
+    G4VPhysicalVolume* physLeftCutOut = new G4PVPlacement(0,
+                                                       G4ThreeVector(-138.745*mm, 0, 0),
+                                                       logicLeftCutOut,
+                                                       LeftCutOut,
+                                                       logicTPC,
+                                                       false,
+                                                       0,
+                                                       fCheckOverlaps);
+     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(LeftCutOut, physLeftCutOut);
+
+  logicLeftCutOut->SetVisAttributes(CutOutAtt);
+
+
 /* Rods on sides of TPC */
 G4String RightRod = GetName() + "/RightRodRegion";
 	G4Box* RightRod1 = new G4Box(RightRod, 1*mm, 1*mm, 25.145*mm);
@@ -132,6 +151,15 @@ G4String RightRod = GetName() + "/RightRodRegion";
 	G4VPhysicalVolume* physRightRod = new G4PVPlacement(0, G4ThreeVector(126*mm, 0, 0), logicRightRod, RightRod, logicTPC, false, 0, fCheckOverlaps);
 	
 	nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(RightRod, physRightRod);
+
+G4String LeftRod = GetName() + "/LeftRodRegion";
+	G4Box* LeftRod1 = new G4Box(LeftRod, 1*mm, 1*mm, 25.145*mm);
+	G4LogicalVolume* logicLeftRod = new G4LogicalVolume(LeftRod1, FindMaterial("G4_STAINLESS-STEEL"), LeftRod);
+	G4VPhysicalVolume* physLeftRod = new G4PVPlacement(0, G4ThreeVector(-126*mm, 0, 0), logicLeftRod, LeftRod, logicTPC, false, 0, fCheckOverlaps);
+	
+	nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(LeftRod, physLeftRod);
+
+
 
 }
 }
