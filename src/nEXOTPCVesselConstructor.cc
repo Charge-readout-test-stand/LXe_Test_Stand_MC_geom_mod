@@ -61,7 +61,6 @@ G4LogicalVolume* nEXOTPCVesselConstructor::GetPiece(void)
        logicTPC =  new G4LogicalVolume(mainTPC,
                                     FindMaterial("G4_STAINLESS-STEEL"),
                                     GetName());
-  
 
   G4VisAttributes* tpcAtt = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
   tpcAtt->SetVisibility(false);
@@ -105,43 +104,25 @@ G4String ghostMainLXe = GetName() + "/ghostMainLXeRegion";
 */
 
 /* Side cut outs of TPC Vessel */
-G4String RightCutOut = GetName() + "/RightCutOutRegion";
+G4String CutOut = GetName() + "/CutOutRegion";
     
-    G4Box* RightCutOut1  = new G4Box(RightCutOut, 13.27*mm, 12.56*mm, 13.27*mm);
+    G4Tubs* CutOut1  = new G4Tubs(CutOut, 0*mm, 152.02*mm, 12.19*mm, 0, 360*deg);
 
-    G4LogicalVolume* logicRightCutOut = new G4LogicalVolume(RightCutOut1, FindMaterial("G4_AIR"), RightCutOut);
+    G4LogicalVolume* logicCutOut = new G4LogicalVolume(CutOut1, FindMaterial("G4_AIR"), CutOut);
 
-    G4VPhysicalVolume* physRightCutOut = new G4PVPlacement(0,
-                                                       G4ThreeVector(138.745*mm, 0, 0),
-                                                       logicRightCutOut,
-                                                       RightCutOut,
+    G4VPhysicalVolume* physCutOut = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, 0),
+                                                       logicCutOut,
+                                                       CutOut,
                                                        logicTPC,
                                                        false,
                                                        0,
                                                        fCheckOverlaps);
-     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(RightCutOut, physRightCutOut);
+     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(CutOut, physCutOut);
 
   G4VisAttributes* CutOutAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
   CutOutAtt->SetVisibility(false);
-  logicRightCutOut->SetVisAttributes(CutOutAtt);
-
-G4String LeftCutOut = GetName() + "/LeftCutOutRegion";
-    
-    G4Box* LeftCutOut1  = new G4Box(LeftCutOut, 13.27*mm, 12.56*mm, 13.27*mm);
-
-    G4LogicalVolume* logicLeftCutOut = new G4LogicalVolume(LeftCutOut1, FindMaterial("G4_AIR"), LeftCutOut);
-
-    G4VPhysicalVolume* physLeftCutOut = new G4PVPlacement(0,
-                                                       G4ThreeVector(-138.745*mm, 0, 0),
-                                                       logicLeftCutOut,
-                                                       LeftCutOut,
-                                                       logicTPC,
-                                                       false,
-                                                       0,
-                                                       fCheckOverlaps);
-     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(LeftCutOut, physLeftCutOut);
-
-  logicLeftCutOut->SetVisAttributes(CutOutAtt);
+  logicCutOut->SetVisAttributes(CutOutAtt);
 
 
 /* Rods on sides of TPC */
