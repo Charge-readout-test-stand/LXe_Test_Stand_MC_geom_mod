@@ -103,7 +103,7 @@ G4String ghostMainLXe = GetName() + "/ghostMainLXeRegion";
     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(ghostinactiveLXeLower, physghostinactiveLXeLower);
 */
 
-/* Side cut outs of TPC Vessel */
+/* Middle cut out of TPC Vessel */
 G4String CutOut = GetName() + "/CutOutRegion";
     
     G4Tubs* CutOut1  = new G4Tubs(CutOut, 0*mm, 152.02*mm, 12.19*mm, 0, 360*deg);
@@ -129,14 +129,16 @@ G4String CutOut = GetName() + "/CutOutRegion";
 G4String RightRod = GetName() + "/RightRodRegion";
 	G4Box* RightRod1 = new G4Box(RightRod, 1*mm, 1*mm, 25.145*mm);
 	G4LogicalVolume* logicRightRod = new G4LogicalVolume(RightRod1, FindMaterial("G4_STAINLESS-STEEL"), RightRod);
-	G4VPhysicalVolume* physRightRod = new G4PVPlacement(0, G4ThreeVector(126*mm, 0, 0), logicRightRod, RightRod, logicTPC, false, 0, fCheckOverlaps);
+	G4VPhysicalVolume* physRightRod = new G4PVPlacement(0, G4ThreeVector(126*mm, 0, 0), logicRightRod, RightRod, logicTPC, false,
+							 0, fCheckOverlaps);
 	
 	nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(RightRod, physRightRod);
 
 G4String LeftRod = GetName() + "/LeftRodRegion";
 	G4Box* LeftRod1 = new G4Box(LeftRod, 1*mm, 1*mm, 25.145*mm);
 	G4LogicalVolume* logicLeftRod = new G4LogicalVolume(LeftRod1, FindMaterial("G4_STAINLESS-STEEL"), LeftRod);
-	G4VPhysicalVolume* physLeftRod = new G4PVPlacement(0, G4ThreeVector(-126*mm, 0, 0), logicLeftRod, LeftRod, logicTPC, false, 0, fCheckOverlaps);
+	G4VPhysicalVolume* physLeftRod = new G4PVPlacement(0, G4ThreeVector(-126*mm, 0, 0), logicLeftRod, LeftRod, logicTPC, false,
+							 0, fCheckOverlaps);
 	
 	nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(LeftRod, physLeftRod);
 
