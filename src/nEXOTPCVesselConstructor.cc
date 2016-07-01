@@ -55,7 +55,7 @@ G4LogicalVolume* nEXOTPCVesselConstructor::GetPiece(void)
   if(fOption == 2) {
        //-----------------------------------Test Stand----------------------------------------
 
-/* TPC Vessel */
+// TPC Vessel 
        
        G4cout << "Making the TPC vessel as a cylinder with R and H  " << fTPCRadiusTestStand << " " << fTPCHeightTestStand << G4endl;
       
@@ -67,23 +67,37 @@ G4String CutOut = GetName() + "/CutOutRegion";
    
     G4SubtractionSolid* TPCCutOut = new G4SubtractionSolid("TPC-CutOut", mainTPC, CutOut1, 0, G4ThreeVector());
 
-G4String RightRod = GetName() + "/RightRodRegion";
+G4String InnerCyl = GetName() + "/InnerCylRegion";
 
-    G4Box* RightRod1 = new G4Box(RightRod, 1*mm, 1*mm, 25.145*mm);
+    G4Tubs* InnerCyl1 = new G4Tubs("InnerCyl", 125*mm, 126*mm, 25.145*mm, 0, 360*deg);
     
-    G4UnionSolid* RightRodTPC = new G4UnionSolid("RightRod+TPC", TPCCutOut, RightRod1, 0, G4ThreeVector(126*mm, 0, 0));
+    G4UnionSolid* InnerCylTPC = new G4UnionSolid("InnerCyl+TPC", TPCCutOut, InnerCyl1, 0, G4ThreeVector(0, 0, 0));
 
-G4String LeftRod = GetName() + "/RightRodRegion";
+/*G4String LeftRod = GetName() + "/RightRodRegion";
 
     G4Box* LeftRod1 = new G4Box(LeftRod, 1*mm, 1*mm, 25.145*mm);
  
     G4UnionSolid* TPCRods = new G4UnionSolid("LeftRod+TPC", RightRodTPC, LeftRod1, 0, G4ThreeVector(-126*mm, 0, 0));
-
+*/
 G4String PancakeEnd = GetName() + "/PancakeEndRegion";
     
     G4Tubs* PancakeEnd1  = new G4Tubs(PancakeEnd, 50.8*mm, 76.8*mm, 10*mm, 0, 360*deg);
 
-    G4UnionSolid* TPC = new G4UnionSolid("PancakeEnd+TPC", TPCRods, PancakeEnd1, 0, G4ThreeVector(0, 0, -74.39*mm));
+    G4UnionSolid* TPCPancake = new G4UnionSolid("PancakeEnd+TPC", InnerCylTPC, PancakeEnd1, 0, G4ThreeVector(0, 0, -74.39*mm));
+
+G4String ghostMainLXe = GetName() + "/ghostLXeRegion";
+    
+    G4Tubs* ghostMainLXe1  = new G4Tubs(ghostMainLXe, 0*mm, 125.475*mm, 39.27*mm, 0, 360*deg);
+
+//    G4UnionSolid* TPCMain = new G4UnionSolid("ghostMain+TPCPancake", TPCPancake, ghostMainLXe1, 0, G4ThreeVector(0, 0, 0));
+
+ G4String ghostinactiveLXeLower = GetName() + "/ghostinactiveLXeLowerRegion";
+    
+    G4Tubs* ghostinactiveLXeLower1  = new G4Tubs(ghostinactiveLXeLower, 0*mm, 50.8*mm, 24.895*mm, 0, 360*deg);
+
+    G4UnionSolid* LXeGhost = new G4UnionSolid("inactiveLower+Main", ghostMainLXe1, ghostinactiveLXeLower1, 0, G4ThreeVector(0, 0, -60.165*mm));
+
+    G4SubtractionSolid* TPC = new G4SubtractionSolid("TPCPancake-LXeGhost", TPCPancake, LXeGhost, 0, G4ThreeVector(0, 0, 0));
 
     logicTPC =  new G4LogicalVolume(TPC, 
                                     FindMaterial("G4_STAINLESS-STEEL"),
