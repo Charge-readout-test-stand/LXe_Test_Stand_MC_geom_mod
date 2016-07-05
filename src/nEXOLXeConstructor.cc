@@ -1,6 +1,6 @@
 #include "nEXOLXeConstructor.hh"
 #include "G4UnionSolid.hh"
-
+#include "G4SubtractionSolid.hh"
 nEXOLXeConstructor::~nEXOLXeConstructor(){;}
 
 void nEXOLXeConstructor::Init(void)
@@ -92,32 +92,15 @@ G4LogicalVolume* nEXOLXeConstructor::GetPiece(void)
 
 G4String inactiveLXeLower = GetName() + "/inactiveLXeLowerRegion";
  
-    G4Tubs* inactiveLXeLower1  = new G4Tubs(inactiveLXeLower, 0*mm, 50.8*mm, 22.895*mm, 0, 360*deg);
+    G4Tubs* inactiveLXeLower1  = new G4Tubs(inactiveLXeLower, 0*mm, 50.8*mm, 21.895*mm, 0, 360*deg);
 
-    G4UnionSolid* inactiveLXe = new G4UnionSolid("mainLXe+inactiveLXeLower", mainLXeAll, inactiveLXeLower1, 0, G4ThreeVector(0, 0, -60.165*mm));
+    G4UnionSolid* inactiveLXe = new G4UnionSolid("mainLXe+inactiveLXeLower", mainLXeAll, inactiveLXeLower1, 0, G4ThreeVector(0, 0, -61.165*mm));
 
     logicLXe = new G4LogicalVolume(inactiveLXe, FindMaterial("liquidXe"), GetName());
 
     G4cout << "//################################################//" << G4endl;
     G4cout << "//############### Test Stand Active Liquid Xe ###############//" << G4endl;
     G4cout << "//################################################//" << G4endl;
-
-		/* TPC Vessel declare (to make TPC mother of inactiveLXe) 
-       G4Tubs* mainTPC = new G4Tubs("mainTPC", 0,  152.02*mm, 64.39*mm, 0, 360*deg);
-       logicTPC =  new G4LogicalVolume(mainTPC,
-                                    FindMaterial("G4_STAINLESS-STEEL"),
-                                    GetName());
-
-    G4VPhysicalVolume* physinactiveLXe = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, 0),
-                                                       logicinactiveLXeLower,
-                                                       inactiveLXe,
-                                                       logicTPC,
-                                                       false,
-                                                       0,
-                                                       fCheckOverlaps);
-	nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inactiveLXe, physinactiveLXe);
-*/
 
 
 /* Active LXe region */    
@@ -151,33 +134,41 @@ G4String AnodeDisk = GetName() + "/AnodeDiskRegion";
     
     G4Tubs* AnodeDisk1  = new G4Tubs(AnodeDisk, 0*mm, 101.6*mm, 3.175*mm, 0, 360*deg);
 
-    G4LogicalVolume* logicAnodeDisk = new G4LogicalVolume(AnodeDisk1, FindMaterial("G4_STAINLESS-STEEL"), AnodeDisk);
+G4String QuartzCutOut = GetName() + "/QuartzCutOutRegion";
 
-    G4VPhysicalVolume* physAnodeDisk = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, 12.555*mm),
-                                                       logicAnodeDisk,
-                                                       AnodeDisk,
-                                                       logicActiveLXe,
+    G4Box* QuartzCutOut1 = new G4Box(QuartzCutOut, 50.8*mm, 50.8*mm, 3.275*mm);
+ 
+    G4SubtractionSolid* AnodeQuartz = new G4SubtractionSolid("Anode-Quartz", AnodeDisk1, QuartzCutOut1, 0, G4ThreeVector(0,0,0));
+
+G4String AnodeQuartzDisk = GetName() + "/AnodeQuartzDiskRegion";
+ 	    
+    G4LogicalVolume* logicAnodeQuartzDisk = new G4LogicalVolume(AnodeQuartz, FindMaterial("G4_STAINLESS-STEEL"), AnodeQuartzDisk);
+
+    G4VPhysicalVolume* physAnodeQuartzDisk = new G4PVPlacement(0,
+                                                       G4ThreeVector(0, 0, -2.465*mm),
+                                                       logicAnodeQuartzDisk,
+                                                       AnodeQuartzDisk,
+                                                       logicLXe,
                                                        false,
                                                        0,
                                                        fCheckOverlaps);
-     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(AnodeDisk, physAnodeDisk);
+     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(AnodeQuartzDisk, physAnodeQuartzDisk);
 
 G4String QuartzTile = GetName() + "/QuartzTileRegion";
 	G4Box* QuartzTile1 = new G4Box(QuartzTile, 50.8*mm, 50.8*mm, 3.175*mm);
 	G4LogicalVolume* logicQuartzTile = new G4LogicalVolume(QuartzTile1, FindMaterial("G4_SILICON_DIOXIDE"), QuartzTile);
 	G4VPhysicalVolume* physQuartzTile = new G4PVPlacement (0,
-							G4ThreeVector(),
+							G4ThreeVector(0, 0, -8.915*mm),
 							logicQuartzTile, 
 							QuartzTile, 
-							logicAnodeDisk, 
+							logicLXe, 
 							false, 
 							0, 
 							fCheckOverlaps);
      nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(QuartzTile, physQuartzTile);
   
 G4VisAttributes* AnodeDiskAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
-logicAnodeDisk->SetVisAttributes(AnodeDiskAtt);
+logicAnodeQuartzDisk->SetVisAttributes(AnodeDiskAtt);
 G4VisAttributes* QuartzTileAtt = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
 logicQuartzTile->SetVisAttributes(QuartzTileAtt); 
 
@@ -189,7 +180,7 @@ G4String CathodeRingUpper = GetName() + "/CathodeUpperRegion";
     G4LogicalVolume* logicCathodeUpper = new G4LogicalVolume(CathodeRingUpper1, FindMaterial("G4_STAINLESS-STEEL"), CathodeRingUpper);
 
     G4VPhysicalVolume* physCathodeUpper = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, -9.28*mm),
+                                                       G4ThreeVector(0, 0, -8.485*mm),
                                                        logicCathodeUpper,
                                                        CathodeRingUpper,
                                                        logicActiveLXe,
@@ -206,10 +197,10 @@ G4String CathodeRingLower = GetName() + "/CathodeLowerRegion";
     G4LogicalVolume* logicCathodeLower = new G4LogicalVolume(CathodeRingLower1, FindMaterial("G4_STAINLESS-STEEL"), CathodeRingLower);
 
     G4VPhysicalVolume* physCathodeLower = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, -9.48*mm),
+                                                       G4ThreeVector(0, 0, -32.32*mm),
                                                        logicCathodeLower,
                                                        CathodeRingLower,
-                                                       logicActiveLXe,
+                                                       logicLXe,
                                                        false,
                                                        0,
                                                        fCheckOverlaps);
