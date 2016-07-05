@@ -119,7 +119,7 @@ G4cout << "Active LXe for the Test Stand Using R1 =" << fActiveLengthTestStand <
     G4LogicalVolume* logicActiveLXe = new G4LogicalVolume(mainLXeActive, FindMaterial("liquidXe"), activeLXeName);
 
     G4VPhysicalVolume* physActiveLXe = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, -21.57*mm),
+                                                       G4ThreeVector(0, 0, 0),
                                                        logicActiveLXe,
                                                        activeLXeName,
                                                        logicLXe,
@@ -134,25 +134,25 @@ G4String AnodeDisk = GetName() + "/AnodeDiskRegion";
     
     G4Tubs* AnodeDisk1  = new G4Tubs(AnodeDisk, 0*mm, 101.6*mm, 3.175*mm, 0, 360*deg);
 
-G4String QuartzCutOut = GetName() + "/QuartzCutOutRegion";
+G4String AnodeCutOut = GetName() + "/AnodeCutOutRegion";
 
-    G4Box* QuartzCutOut1 = new G4Box(QuartzCutOut, 50.8*mm, 50.8*mm, 3.275*mm);
+    G4Box* AnodeCutOut1 = new G4Box(AnodeCutOut, 50.8*mm, 50.8*mm, 3.275*mm);
  
-    G4SubtractionSolid* AnodeQuartz = new G4SubtractionSolid("Anode-Quartz", AnodeDisk1, QuartzCutOut1, 0, G4ThreeVector(0,0,0));
+    G4SubtractionSolid* Anode = new G4SubtractionSolid("AnodeDisk-AnodeCutOut", AnodeDisk1, AnodeCutOut1, 0, G4ThreeVector(0,0,0));
 
-G4String AnodeQuartzDisk = GetName() + "/AnodeQuartzDiskRegion";
+G4String AnodeFinalDisk = GetName() + "/AnodeFinalDiskRegion";
  	    
-    G4LogicalVolume* logicAnodeQuartzDisk = new G4LogicalVolume(AnodeQuartz, FindMaterial("G4_STAINLESS-STEEL"), AnodeQuartzDisk);
+    G4LogicalVolume* logicAnodeFinalDisk = new G4LogicalVolume(Anode, FindMaterial("G4_STAINLESS-STEEL"), AnodeFinalDisk);
 
-    G4VPhysicalVolume* physAnodeQuartzDisk = new G4PVPlacement(0,
+    G4VPhysicalVolume* physAnodeFinalDisk = new G4PVPlacement(0,
                                                        G4ThreeVector(0, 0, -2.465*mm),
-                                                       logicAnodeQuartzDisk,
-                                                       AnodeQuartzDisk,
+                                                       logicAnodeFinalDisk,
+                                                       AnodeFinalDisk,
                                                        logicLXe,
                                                        false,
                                                        0,
                                                        fCheckOverlaps);
-     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(AnodeQuartzDisk, physAnodeQuartzDisk);
+     nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(AnodeFinalDisk, physAnodeFinalDisk);
 
 G4String QuartzTile = GetName() + "/QuartzTileRegion";
 	G4Box* QuartzTile1 = new G4Box(QuartzTile, 50.8*mm, 50.8*mm, 3.175*mm);
@@ -168,7 +168,7 @@ G4String QuartzTile = GetName() + "/QuartzTileRegion";
      nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(QuartzTile, physQuartzTile);
   
 G4VisAttributes* AnodeDiskAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
-logicAnodeQuartzDisk->SetVisAttributes(AnodeDiskAtt);
+logicAnodeFinalDisk->SetVisAttributes(AnodeDiskAtt);
 G4VisAttributes* QuartzTileAtt = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
 logicQuartzTile->SetVisAttributes(QuartzTileAtt); 
 
