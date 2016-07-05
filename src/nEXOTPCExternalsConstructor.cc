@@ -1,8 +1,5 @@
 #include "nEXOTPCExternalsConstructor.hh"
-#include "G4UnionSolid.hh" 
-#include "nEXOLXeConstructor.hh"
-#include "nEXOTPCInternalsConstructor.hh"
-#include "nEXOTPCVesselConstructor.hh"
+
 
 class nEXOTPCExternalsMessenger : public nEXOModuleConstructorMessenger
 {
@@ -438,7 +435,7 @@ G4LogicalVolume* nEXOTPCExternalsConstructor::GetPieceOld(G4LogicalVolume *logic
   G4LogicalVolume* logicSurroundRock = new G4LogicalVolume(new G4Tubs(surroundRockName,
                                                                       0, surroundRockR,
                                                                       surroundRockH,
-								      0, 360*deg),
+                                                                      0, 360*deg),
                                                            FindMaterial("Rock"),
                                                            surroundRockName);
 
@@ -962,7 +959,9 @@ G4LogicalVolume* nEXOTPCExternalsConstructor::GetPieceTestStand(G4LogicalVolume 
 
   nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(inCryoName,physInCryo);
   logicInCryo->SetVisAttributes(inCryoAtt);
-  
+
+
+
   G4cout << "//************************************************//" << G4endl;
   G4cout << "//******************** HFE ***********************//" << G4endl;
   G4cout << "//************************************************//" << G4endl;
@@ -995,7 +994,7 @@ G4LogicalVolume* nEXOTPCExternalsConstructor::GetPieceTestStand(G4LogicalVolume 
 
   fTPCVesselMotherVolume = logicHFE;
  
-   
+
   G4Region*  CryostatRegion = new G4Region("CryostatRegion");
   CryostatRegion->AddRootLogicalVolume(logicOutCryo);
 
