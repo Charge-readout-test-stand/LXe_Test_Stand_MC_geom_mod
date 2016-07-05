@@ -119,7 +119,7 @@ G4cout << "Active LXe for the Test Stand Using R1 =" << fActiveLengthTestStand <
     G4LogicalVolume* logicActiveLXe = new G4LogicalVolume(mainLXeActive, FindMaterial("liquidXe"), activeLXeName);
 
     G4VPhysicalVolume* physActiveLXe = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, 0),
+                                                       G4ThreeVector(0, 0, -21.57*mm),
                                                        logicActiveLXe,
                                                        activeLXeName,
                                                        logicLXe,
