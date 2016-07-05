@@ -114,7 +114,7 @@ G4cout << "Active LXe for the Test Stand Using R1 =" << fActiveLengthTestStand <
     //G4Box* mainLXeActive = new G4Box(activeLXeName, fActiveLengthTestStand, fActiveWidthTestStand, fActiveHeightTestStand);
    
 
-    G4Tubs* mainLXeActive = new G4Tubs(activeLXeName, 0, 105*mm, 9.38*mm, 0, 360*deg);
+    G4Tubs* mainLXeActive = new G4Tubs(activeLXeName, 0, 105*mm, 9.08*mm, 0, 360*deg);
 
     G4LogicalVolume* logicActiveLXe = new G4LogicalVolume(mainLXeActive, FindMaterial("liquidXe"), activeLXeName);
 
