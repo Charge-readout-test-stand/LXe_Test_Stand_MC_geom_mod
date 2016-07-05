@@ -63,21 +63,15 @@ G4LogicalVolume* nEXOTPCVesselConstructor::GetPiece(void)
 
 G4String CutOut = GetName() + "/CutOutRegion";
     
-    G4Tubs* CutOut1  = new G4Tubs(CutOut, 0*mm, 153*mm, 12.19*mm, 0, 360*deg);
+    G4Tubs* CutOut1  = new G4Tubs(CutOut, 127.405*mm, 153*mm, 12.19*mm, 0, 360*deg);
    
     G4SubtractionSolid* TPCCutOut = new G4SubtractionSolid("TPC-CutOut", mainTPC, CutOut1, 0, G4ThreeVector());
 
-G4String InnerCyl = GetName() + "/InnerCylRegion";
-
-    G4Tubs* InnerCyl1 = new G4Tubs("InnerCyl", 125.375, 127.405*mm, 25.145*mm, 0, 360*deg);
-    
-    G4UnionSolid* InnerCylTPC = new G4UnionSolid("InnerCyl+TPC", TPCCutOut, InnerCyl1, 0, G4ThreeVector(0, 0, 0));
-
-G4String PancakeEnd = GetName() + "/PancakeEndRegion";
+G4String PancakeEnd = GetName() + "/PancakeEndRegion"; /* Pancake End is for the optical window */
     
     G4Tubs* PancakeEnd1  = new G4Tubs(PancakeEnd, 0*mm, 76.2*mm, 12*mm, 0, 360*deg);
 
-    G4UnionSolid* TPC = new G4UnionSolid("PancakeEnd+TPC", InnerCylTPC, PancakeEnd1, 0, G4ThreeVector(0, 0, -74.39*mm));
+    G4UnionSolid* TPC = new G4UnionSolid("PancakeEnd+TPC", TPCCutOut, PancakeEnd1, 0, G4ThreeVector(0, 0, -74.39*mm));
 
    logicTPC =  new G4LogicalVolume(TPC, 
                                     FindMaterial("G4_STAINLESS-STEEL"),
