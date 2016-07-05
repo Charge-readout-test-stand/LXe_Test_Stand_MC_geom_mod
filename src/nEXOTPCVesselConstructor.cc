@@ -69,37 +69,17 @@ G4String CutOut = GetName() + "/CutOutRegion";
 
 G4String InnerCyl = GetName() + "/InnerCylRegion";
 
-    G4Tubs* InnerCyl1 = new G4Tubs("InnerCyl", 125*mm, 126*mm, 25.145*mm, 0, 360*deg);
+    G4Tubs* InnerCyl1 = new G4Tubs("InnerCyl", 125.375, 127.405*mm, 25.145*mm, 0, 360*deg);
     
     G4UnionSolid* InnerCylTPC = new G4UnionSolid("InnerCyl+TPC", TPCCutOut, InnerCyl1, 0, G4ThreeVector(0, 0, 0));
 
-/*G4String LeftRod = GetName() + "/RightRodRegion";
-
-    G4Box* LeftRod1 = new G4Box(LeftRod, 1*mm, 1*mm, 25.145*mm);
- 
-    G4UnionSolid* TPCRods = new G4UnionSolid("LeftRod+TPC", RightRodTPC, LeftRod1, 0, G4ThreeVector(-126*mm, 0, 0));
-*/
 G4String PancakeEnd = GetName() + "/PancakeEndRegion";
     
-    G4Tubs* PancakeEnd1  = new G4Tubs(PancakeEnd, 50.8*mm, 76.8*mm, 10*mm, 0, 360*deg);
+    G4Tubs* PancakeEnd1  = new G4Tubs(PancakeEnd, 0*mm, 76.2*mm, 12*mm, 0, 360*deg);
 
-    G4UnionSolid* TPCPancake = new G4UnionSolid("PancakeEnd+TPC", InnerCylTPC, PancakeEnd1, 0, G4ThreeVector(0, 0, -74.39*mm));
+    G4UnionSolid* TPC = new G4UnionSolid("PancakeEnd+TPC", InnerCylTPC, PancakeEnd1, 0, G4ThreeVector(0, 0, -74.39*mm));
 
-G4String ghostMainLXe = GetName() + "/ghostLXeRegion";
-    
-    G4Tubs* ghostMainLXe1  = new G4Tubs(ghostMainLXe, 0*mm, 125.475*mm, 39.27*mm, 0, 360*deg);
-
-//    G4UnionSolid* TPCMain = new G4UnionSolid("ghostMain+TPCPancake", TPCPancake, ghostMainLXe1, 0, G4ThreeVector(0, 0, 0));
-
- G4String ghostinactiveLXeLower = GetName() + "/ghostinactiveLXeLowerRegion";
-    
-    G4Tubs* ghostinactiveLXeLower1  = new G4Tubs(ghostinactiveLXeLower, 0*mm, 50.8*mm, 24.895*mm, 0, 360*deg);
-
-    G4UnionSolid* LXeGhost = new G4UnionSolid("inactiveLower+Main", ghostMainLXe1, ghostinactiveLXeLower1, 0, G4ThreeVector(0, 0, -60.165*mm));
-
-    G4SubtractionSolid* TPC = new G4SubtractionSolid("TPCPancake-LXeGhost", TPCPancake, LXeGhost, 0, G4ThreeVector(0, 0, 0));
-
-    logicTPC =  new G4LogicalVolume(TPC, 
+   logicTPC =  new G4LogicalVolume(TPC, 
                                     FindMaterial("G4_STAINLESS-STEEL"),
                                     GetName());
 
@@ -113,40 +93,6 @@ G4String ghostMainLXe = GetName() + "/ghostLXeRegion";
 
   return logicTPC;
 }
-/* 'Ghost' region for inactive LXe volume in case it won't be TPC's daughter
-G4String ghostMainLXe = GetName() + "/ghostMainLXeRegion";
-    
-    G4Tubs* ghostMainLXe1  = new G4Tubs(ghostMainLXe, 0*mm, 125.475*mm, 39.27*mm, 0, 360*deg);
-
-    G4LogicalVolume* logicghostMainLXe = new G4LogicalVolume(ghostMainLXe1, FindMaterial("G4_AIR"), ghostMainLXe);
-
-    G4VPhysicalVolume* physghostMainLXe = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, 0),
-                                                       logicghostMainLXe,
-                                                       ghostMainLXe,
-                                                       logicTPC,
-                                                       false,
-                                                       0,
-                                                       fCheckOverlaps);
-    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(ghostMainLXe, physghostMainLXe);
-
- G4String ghostinactiveLXeLower = GetName() + "/ghostinactiveLXeLowerRegion";
-    
-    G4Tubs* ghostinactiveLXeLower1  = new G4Tubs(ghostinactiveLXeLower, 0*mm, 50.8*mm, 21.895*mm, 0, 360*deg);
-
-    G4LogicalVolume* logicghostinactiveLXeLower = new G4LogicalVolume(ghostinactiveLXeLower1, FindMaterial("G4_AIR"), ghostinactiveLXeLower);
-
-    G4VPhysicalVolume* physghostinactiveLXeLower = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, -90.07*mm),
-                                                       logicghostinactiveLXeLower,
-                                                       ghostinactiveLXeLower,
-                                                       logicTPC,
-                                                       false,
-                                                       0,
-                                                       fCheckOverlaps);
-    nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(ghostinactiveLXeLower, physghostinactiveLXeLower);
-*/
-
 
 }
 
