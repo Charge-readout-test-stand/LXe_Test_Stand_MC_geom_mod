@@ -125,7 +125,7 @@ void nEXOTPCExternalsConstructor::Init(void)
   SetLabHeight(10*m);
   SetLabWidth(10*m);
   SetLabLength(10*m);
-  fTPCVesselTranslation.setZ(21.57*mm);
+  fTPCVesselTranslation.setZ(19.65*mm);
  
   //-------------------------------------------------------------------------------------
 
