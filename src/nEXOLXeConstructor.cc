@@ -145,7 +145,7 @@ G4String AnodeFinalDisk = GetName() + "/AnodeFinalDiskRegion";
     G4LogicalVolume* logicAnodeFinalDisk = new G4LogicalVolume(Anode, FindMaterial("G4_STAINLESS-STEEL"), AnodeFinalDisk);
 
     G4VPhysicalVolume* physAnodeFinalDisk = new G4PVPlacement(0,
-                                                       G4ThreeVector(0, 0, -2.465*mm),
+                                                       G4ThreeVector(0, 0, -8.615*mm),
                                                        logicAnodeFinalDisk,
                                                        AnodeFinalDisk,
                                                        logicLXe,
@@ -155,10 +155,10 @@ G4String AnodeFinalDisk = GetName() + "/AnodeFinalDiskRegion";
      nEXOSimplePhysVolManager::GetInstance()->AddPhysicalVolume(AnodeFinalDisk, physAnodeFinalDisk);
 
 G4String QuartzTile = GetName() + "/QuartzTileRegion";
-	G4Box* QuartzTile1 = new G4Box(QuartzTile, 50.8*mm, 50.8*mm, 3.175*mm);
+	G4Box* QuartzTile1 = new G4Box(QuartzTile, 50.8*mm, 50.8*mm, 0.25*mm);
 	G4LogicalVolume* logicQuartzTile = new G4LogicalVolume(QuartzTile1, FindMaterial("G4_SILICON_DIOXIDE"), QuartzTile);
 	G4VPhysicalVolume* physQuartzTile = new G4PVPlacement (0,
-							G4ThreeVector(0, 0, -8.915*mm),
+							G4ThreeVector(0, 0, -12.14*mm),
 							logicQuartzTile, 
 							QuartzTile, 
 							logicLXe, 
