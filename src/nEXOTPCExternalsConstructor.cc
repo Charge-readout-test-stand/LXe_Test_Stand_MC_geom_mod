@@ -125,6 +125,8 @@ void nEXOTPCExternalsConstructor::Init(void)
   SetLabHeight(10*m);
   SetLabWidth(10*m);
   SetLabLength(10*m);
+  fTPCVesselTranslation.setZ(21.57*mm);
+ 
   //-------------------------------------------------------------------------------------
 
   AddConstructor(new nEXOWaterTankConstructor("WaterShieldTank",this));
