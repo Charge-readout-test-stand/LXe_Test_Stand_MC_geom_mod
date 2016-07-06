@@ -435,6 +435,14 @@ void nEXOAnalysis::AddThermalElectron(G4ThreeVector pos, G4double eTime) {
   fNTE++;
 }
 
+void nEXOAnalysis::AddOpticalPhoton(G4ThreeVector pos, G4double eTime) {
+  //if (fNTE % 10000 == 0){ G4cout << "nEXOAnalysis::AddOpticalPhoton" << fNTE << G4endl; }
+  fOPX[fNOP] = pos[0];
+  fOPY[fNOP] = pos[1];
+  fOPZ[fNOP] = pos[2];
+  fNOP++;
+}
+
 void nEXOAnalysis::ResetTreeVariables(void)
 {
   fEventNumber = 0;
@@ -537,13 +545,13 @@ void nEXOAnalysis::SetTreeBranches(void)
   fRootTree->Branch("KineticEnergy", fKineticEnergy,"KineticEnergy[NPrimaries]/D"); 
   fRootTree->Branch("InitNumOP", &fInitNOP, "InitNumOP/I");
   //fRootTree->Branch("OPStopVolume", fOPStopVolume, "OPStopVolume[InitNumOP]/I");
-  //fRootTree->Branch("NumOP", &fNOP, "NumOP/I");
+  fRootTree->Branch("NumOP", &fNOP, "NumOP/I");
   //fRootTree->Branch("SiPMID", fSiPMID, "SiPMID[NumOP]/I");
   //fRootTree->Branch("OPEnergy", fOPEnergy, "OPEnergy[NumOP]/D");
   //fRootTree->Branch("OPTime", fOPTime, "OPTime[NumOP]/D");
-  //fRootTree->Branch("OPX", fOPX, "OPX[NumOP]/D");
-  //fRootTree->Branch("OPY", fOPY, "OPY[NumOP]/D");
-  //fRootTree->Branch("OPZ", fOPZ, "OPZ[NumOP]/D");
+  fRootTree->Branch("OPX", fOPX, "OPX[NumOP]/D");
+  fRootTree->Branch("OPY", fOPY, "OPY[NumOP]/D");
+  fRootTree->Branch("OPZ", fOPZ, "OPZ[NumOP]/D");
   fRootTree->Branch("NumTE", &fNTE, "NumTE/I");
   //fRootTree->Branch("TEEnergy", fTEEnergy, "TEEnergy[NumTE]/D");
   fRootTree->Branch("TEX", fTEX, "TEX[NumTE]/D");
