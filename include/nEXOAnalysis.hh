@@ -109,6 +109,7 @@ public:
 
   void GetTE(int i, G4double& E, G4double& X, G4double& Y, G4double& Z, G4double& T);
   void AddThermalElectron(G4ThreeVector pos, G4double eTime);
+  void AddOpticalPhoton(G4ThreeVector pos, G4double eTime);
   void AddInitNOP() { fInitNOP++;}
 
   void SetIsNewSubEvent(G4bool val){ fIsNewSubEvent = val; }
