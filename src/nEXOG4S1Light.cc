@@ -57,6 +57,7 @@
 #include <cmath>
 #include "nEXOG4S1Light.hh"
 #include "nEXONestMaterialTable.hh"
+#include "nEXOAnalysis.hh"
 
 #define MIN_ENE -1*eV //lets you turn NEST off BELOW a certain energy
 #define MAX_ENE 1.*TeV //lets you turn NEST off ABOVE a certain energy
@@ -333,8 +334,7 @@ nEXOG4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         G4double ElectricField, FieldSign; //for field quenching of S1
         G4bool GlobalFields = false;
         if ( !WIN && !TOP && !ANE && !SRF && !GAT && !CTH && !BOT && !PMT ) {
-          ElectricField = aMatTable->
-            GetConstProperty("ELECTRICFIELD"); GlobalFields = true; }
+          ElectricField =  nEXOAnalysis::GetInstance()->GetEField(x1[0], x1[1], x1[2]); GlobalFields = true; }
         else {
           if ( x1[2] < WIN && x1[2] > TOP && Phase == kStateGas )
             ElectricField = aMatTable->
