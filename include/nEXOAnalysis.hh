@@ -43,6 +43,7 @@
 #include "TGeoCone.h"
 #include "TGeoTube.h"
 #include "TParameter.h"
+#include "TH2D.h"
 
 #include "Geant4GM/volumes/Factory.h"
 #include "RootGM/volumes/Factory.h"
@@ -63,9 +64,10 @@ public:
     if(nEXOAnalysis::fInstance == NULL) nEXOAnalysis::fInstance = new nEXOAnalysis();
     return nEXOAnalysis::fInstance;
   }
-  
+   
   virtual ~nEXOAnalysis();
   
+  double GetEField(double x, double y, double z);
   void SetROOTFileName(G4String& name){fRootFileName = name;}
   void SetROOTTreeName(G4String& name){fRootTreeName = name;}   
   void SetPropagateOP(G4int flag) { fPropagateOP = flag; }
@@ -73,7 +75,7 @@ public:
   void SetSaveOP(G4int flag) { fSaveOP = flag; }
   void SetSaveTE(G4int flag) { fSaveTE = flag; }
   void SetElectricField(G4double field) { fField = field; }
-
+  
   void SetSaveOnlyEventsWithDeposits(G4bool saveOnly){ fSaveOnlyEventsWithDeposits = saveOnly; }
   
   G4int GetPropagateOP() { return fPropagateOP; }
@@ -126,7 +128,7 @@ private:
   G4String fRootTreeName;
   TFile* fRootFile; 
   TTree* fRootTree;
-
+  TH2D* EfieldHist;
 private:
   
   G4int fEventNumber;
