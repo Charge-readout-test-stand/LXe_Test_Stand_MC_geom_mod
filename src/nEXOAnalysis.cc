@@ -74,6 +74,14 @@ nEXOAnalysisMessenger::~nEXOAnalysisMessenger()
 
 }
 
+double nEXOAnalysis::GetEField(double x, double y, double z)
+{
+double rho = sqrt(x*x + y*y);//ask alexis about units, everything in mm
+double iBin = EfieldHist->FindBin(rho,z);
+return EfieldHist->GetBinContent(iBin);
+cout << "E Field " << GetEField(1, 1, 1) << endl; 
+}
+
 void nEXOAnalysisMessenger::SetNewValue(G4UIcommand* cmd, G4String val)
 {
   if (cmd == fRootFileNameCmd) fAnalysis->SetROOTFileName(val);
