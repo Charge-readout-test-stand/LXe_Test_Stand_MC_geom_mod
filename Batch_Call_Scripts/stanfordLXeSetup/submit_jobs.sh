@@ -11,13 +11,13 @@
 
 # base output directory 
 #export MCBASE="/nfs/slac/g/exo_data4/users/alexis4/test-stand/mc"
-export nEXODataDir="/nfs/slac/g/exo_data4/users/alexis4/test-stand/mc"
+export nEXODataDir="/nfs/slac/g/exo_data4/users/manisha2/MC"
 
 # nEXO MC build:
-export NEXOMCBUILD="$HOME/software/nEXOSW/LXe_Test_Stand_MC_build"
+export NEXOMCBUILD="~/software/build_LXe_Test_Stand_MC_geom_mod/"
 
 # nEXO MC:
-export NEXOMC="$HOME/software/nEXOSW/LXe_Test_Stand_MC"
+export NEXOMC="~/software/LXe_Test_Stand_MC_geom_mod/"
 
 # charge-readout-scripts
 export CHARGEREADOUTSCRIPTS="$HOME/software/charge-readout-scripts/struck/"
@@ -32,11 +32,12 @@ TYPE=Bi207_Full_Ralph
 #j=100
 #last_job=199 # last job
 
-DIFF=51 # diff coefficient, for testing
+DIFF=0 # diff coefficient, for testing
 #DIFF=1 # for testing
-j=0
-#last_job=$j # run one job
-last_job=99 # last job
+j=801
+last_job=900
+#last_job=300 # run one job
+#last_job=99 # last job
 
 # FIXME -- fix Bi207_Full_Ralph.in beamon number, fix digi* template to remove
 # files & run tier3!!
