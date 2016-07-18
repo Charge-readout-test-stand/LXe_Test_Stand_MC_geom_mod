@@ -83,6 +83,7 @@ private:
   //-------------------------------------------------------------------------------------
 
 public:
+
   nEXOLXeMessenger(nEXOLXeConstructor* construct)
     : nEXOConeComponentConstructorMessenger(construct, "Control the LXe in the TPC vessel of the nEXO detector."),
       fConstructor(construct){
