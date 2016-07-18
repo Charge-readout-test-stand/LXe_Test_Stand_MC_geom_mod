@@ -1,6 +1,8 @@
 #include "nEXOAnalysis.hh"
 #include "G4SystemOfUnits.hh"
 #include "TDirectory.h"
+#include <iostream>
+using namespace std; 
 
 nEXOAnalysisMessenger::nEXOAnalysisMessenger(nEXOAnalysis* analysis)
 {
@@ -13,10 +15,12 @@ nEXOAnalysisMessenger::nEXOAnalysisMessenger(nEXOAnalysis* analysis)
   fRootFileNameCmd->SetGuidance("Set the name for output ROOT file.");
   fRootFileNameCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
   
+  fEFieldFileNameCmd = new G4UIcmdWithAString("/analysis/setEFieldFileName",this);
+  
   fRootTreeNameCmd = new G4UIcmdWithAString("/analysis/setOutputROOTTreeName",this);
   fRootTreeNameCmd->SetGuidance("Set the name for output ROOT tree [default = tree].");
   fRootTreeNameCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
-
+    
   fPrintVolNames = new G4UIcmdWithoutParameter("/analysis/printLogicVolumeNames",this);
   fPrintVolNames->SetGuidance("Print the logic volume names with a physical volume associated to nEXOSimplePhysVolManager");
   fPrintVolNames->AvailableForStates(G4State_Idle);
@@ -74,12 +78,36 @@ nEXOAnalysisMessenger::~nEXOAnalysisMessenger()
 
 }
 
+bool nEXOAnalysis::LoadEFieldHist(TString EFieldHistName)
+{
+  fFile = new TFile(EFieldHistName);
+  cout << "Name of file " << EFieldHistName << endl;
+  fEfieldhist = (TH2D*) fFile->Get("Efieldhist");
+  if (fEfieldhist == 0) {
+    cout << "E field hist not found" << endl;
+    return false;
+  }
+  cout << "E field hist is being used" << endl;
+  return true;
+}
+
+
 double nEXOAnalysis::GetEField(double x, double y, double z)
 {
-double rho = sqrt(x*x + y*y);//ask alexis about units, everything in mm
-double iBin = EfieldHist->FindBin(rho,z);
-return EfieldHist->GetBinContent(iBin);
-cout << "E Field " << GetEField(1, 1, 1) << endl; 
+  if (fEfieldhist == 0) {
+    cout << "E FIELD HIST NOT FOUND" << endl;
+    return 0;
+   }
+  else {
+  double rho = sqrt(x*x + y*y);//in mm
+  double iBin = fEfieldhist->FindBin(rho,z);
+  double BinContent = fEfieldhist->GetBinContent(iBin);
+  //if (BinContent == 0) {
+    //cout << "E field is 0 rho =  " << rho <<  " z = " << z << endl;
+  // }
+  return BinContent;
+  //cout << "E Field " << GetEField(1, 1, 1) << endl; 
+  }
 }
 
 void nEXOAnalysisMessenger::SetNewValue(G4UIcommand* cmd, G4String val)
@@ -94,6 +122,7 @@ void nEXOAnalysisMessenger::SetNewValue(G4UIcommand* cmd, G4String val)
   else if (cmd == fSaveOpCmd) fAnalysis->SetSaveOP(fSaveOpCmd->GetNewIntValue(val));
   else if (cmd == fSaveTeCmd) fAnalysis->SetSaveTE(fSaveTeCmd->GetNewIntValue(val));
   else if (cmd == fSaveOnlyEventsWithDepositsCmd) fAnalysis->SetSaveOnlyEventsWithDeposits(fSaveOnlyEventsWithDepositsCmd->GetNewBoolValue(val));
+  else if (cmd == fEFieldFileNameCmd) fAnalysis->SetEFieldFileName(val);
 }
 
 nEXOAnalysis* nEXOAnalysis::fInstance = 0;
@@ -104,6 +133,7 @@ nEXOAnalysis::nEXOAnalysis()
   fRootTree = NULL;
   fRootFileName = "output.root";
   fRootTreeName = "tree";
+  fEfieldhist = 0;
 
   ResetTreeVariables();
   fSubEventNumber = 0; 
@@ -142,6 +172,10 @@ void nEXOAnalysis::PrepareNewRun(const G4Run* g4Run)
   ResetTreeVariables();
   
   SetTreeBranches();
+
+  nEXOAnalysis::LoadEFieldHist(fEFieldFileName);
+
+  
 }
 
 void nEXOAnalysis::EndOfRun(const G4Run* g4Run)
