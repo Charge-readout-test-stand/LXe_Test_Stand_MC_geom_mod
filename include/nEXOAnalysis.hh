@@ -69,6 +69,7 @@ public:
   
   double GetEField(double x, double y, double z);
   void SetROOTFileName(G4String& name){fRootFileName = name;}
+  void SetEFieldFileName(G4String& name){fEFieldFileName = name;}
   void SetROOTTreeName(G4String& name){fRootTreeName = name;}   
   void SetPropagateOP(G4int flag) { fPropagateOP = flag; }
   void SetPropagateTE(G4int flag) { fPropagateTE = flag; }
@@ -117,6 +118,9 @@ public:
   void SetIsNewSubEvent(G4bool val){ fIsNewSubEvent = val; }
   G4bool GetIsNewSubEvent() { return fIsNewSubEvent; }
 
+  bool LoadEFieldHist(TString EFieldHistName);
+  TH2D* GetfEfieldhist() { return fEfieldhist; }
+
 private:
   nEXOAnalysis();
   static nEXOAnalysis* fInstance;
@@ -125,10 +129,12 @@ private:
   void SetTreeBranches();
   
   G4String fRootFileName;
+  G4String fEFieldFileName;
   G4String fRootTreeName;
   TFile* fRootFile; 
   TTree* fRootTree;
-  TH2D* EfieldHist;
+  TFile* fFile;
+  TH2D* fEfieldhist;
 private:
   
   G4int fEventNumber;
@@ -202,6 +208,7 @@ private:
   G4UIdirectory* fDirectory;
 
   G4UIcmdWithAString* fRootFileNameCmd;
+  G4UIcmdWithAString* fEFieldFileNameCmd;
   G4UIcmdWithAString* fRootTreeNameCmd;
 
   G4UIcmdWithAnInteger* fPrintVolumesCmd;
