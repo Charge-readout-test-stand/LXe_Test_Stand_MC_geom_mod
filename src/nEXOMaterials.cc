@@ -409,7 +409,7 @@ void nEXOMaterials::AddMatProperties() {
 
 //  fLXeMat = new G4MaterialPropertiesTable(); 
   fLXeMat = new nEXONestMaterialTable();
-  fLXeMat->AddConstProperty( "ELECTRICFIELD", 0*volt/cm ); //for missed nooks and crannies
+  fLXeMat->AddConstProperty( "ELECTRICFIELD", 936.12*volt/cm ); //for missed nooks and crannies
   fLXeMat->AddConstProperty( "ELECTRICFIELDSURFACE", 0*volt/cm );
   fLXeMat->AddConstProperty( "ELECTRICFIELDGATE", 0*volt/cm );
   fLXeMat->AddConstProperty( "ELECTRICFIELDCATHODE", 0*volt/cm );
