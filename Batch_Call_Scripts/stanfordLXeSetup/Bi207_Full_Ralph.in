@@ -80,12 +80,14 @@
 /EXOPhysicsList/cutValueInsideTPC 100.0 nm
 /EXOPhysicsList/cutValueInnerRegion 1.0 mm
 
+#/analysis/setOutputROOTFileName test.root
 /analysis/setOutputROOTFileName mc/runSEQNUM.root
+/analysis/setEFieldFileName /nfs/slac/g/exo_data4/users/manisha2/MC/TPC_E_RegGrid_20160718_NoNaN.root
 #/analysis/setOutputROOTFileOption UPDATE
 /analysis/setOutputROOTTreeName nEXOevents
 /analysis/setPropagateOP 0
 /analysis/setPropagateTE 0
-/analysis/setSaveOP 0
+/analysis/setSaveOP 1
 /analysis/setSaveTE 1
 /analysis/setSaveOnlyEventsWithDeposits 0
 
@@ -108,8 +110,8 @@
 
 /gps/source/list 
 /grdm/analogueMC 1
-#/run/beamOn 100 # testing
-/run/beamOn 500 # ~1 hr total with diff coeff 50, or 10 min with diff coeff 0
+/run/beamOn 250 # testing
+#/run/beamOn 500 # ~1 hr total with diff coeff 50, or 10 min with diff coeff 0
 #/run/beamOn 4000 
 
 
