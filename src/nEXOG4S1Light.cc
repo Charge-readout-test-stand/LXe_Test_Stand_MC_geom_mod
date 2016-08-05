@@ -1251,7 +1251,8 @@ nEXOG4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         // not create the particle object for opticalphoton
         delete  aQuantum;
         if(nEXOAnalysis::GetInstance()->GetSaveOP()==1)
-          nEXOAnalysis::GetInstance()->AddOpticalPhoton(aSecondaryPosition, aSecondaryTime);
+          nEXOAnalysis::GetInstance()->AddOpticalPhoton(aSecondaryPosition, ElectricField);
+//           nEXOAnalysis::GetInstance()->AddOpticalPhoton(aSecondaryPosition, aSecondaryTime); 
       } else {
 	        G4Track * aSecondaryTrack = 
 		      new G4Track(aQuantum,aSecondaryTime,aSecondaryPosition);
