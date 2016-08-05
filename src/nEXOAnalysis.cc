@@ -101,7 +101,7 @@ double nEXOAnalysis::GetEField(double x, double y, double z)
   else {
   double rho = sqrt(x*x + y*y);//in mm
   double iBin = fEfieldhist->FindBin(rho,z);
-  double BinContent = fEfieldhist->GetBinContent(iBin);
+  double BinContent = fEfieldhist->GetBinContent(iBin)*volt/cm;
   //if (BinContent == 0) {
     //cout << "E field is 0 rho =  " << rho <<  " z = " << z << endl;
   // }
@@ -428,6 +428,7 @@ void nEXOAnalysis::SteppingAction(const G4Step* step)
         G4double OPX = (preStepPoint->GetPosition()).getX()/mm;
         G4double OPY = (preStepPoint->GetPosition()).getY()/mm;
         G4double OPZ = (preStepPoint->GetPosition()).getZ()/mm;
+//        G4double OPT = (
 
         fSiPMID[nOP] = SiPMID;
         fOPTime[nOP] = time;
@@ -435,7 +436,7 @@ void nEXOAnalysis::SteppingAction(const G4Step* step)
         fOPX[nOP] = OPX;
         fOPY[nOP] = OPY;
         fOPZ[nOP] = OPZ;
-
+       // fOPT[nOP] = OPT;
         fNOP++;
       }
       else if (strcmp(step->GetTrack()->GetNextVolume()->GetName(),"/nEXO/TPCInternals/SiPMPadBase")==0)
@@ -482,6 +483,7 @@ void nEXOAnalysis::AddOpticalPhoton(G4ThreeVector pos, G4double eTime) {
   fOPX[fNOP] = pos[0];
   fOPY[fNOP] = pos[1];
   fOPZ[fNOP] = pos[2];
+  fOPT[fNOP] = eTime;
   fNOP++;
 }
 
@@ -511,7 +513,8 @@ void nEXOAnalysis::ResetTreeVariables(void)
     fOPEnergy[i] = 0; 
     fOPX[i] = 0; 
     fOPY[i] = 0; 
-    fOPZ[i] = 0; 
+    fOPZ[i] = 0;
+    fOPT[i] = 0;
   }
   fNOP = 0;
 
@@ -594,6 +597,7 @@ void nEXOAnalysis::SetTreeBranches(void)
   fRootTree->Branch("OPX", fOPX, "OPX[NumOP]/D");
   fRootTree->Branch("OPY", fOPY, "OPY[NumOP]/D");
   fRootTree->Branch("OPZ", fOPZ, "OPZ[NumOP]/D");
+  fRootTree->Branch("OPT", fOPT, "OPT[NumOP]/D");
   fRootTree->Branch("NumTE", &fNTE, "NumTE/I");
   //fRootTree->Branch("TEEnergy", fTEEnergy, "TEEnergy[NumTE]/D");
   fRootTree->Branch("TEX", fTEX, "TEX[NumTE]/D");
