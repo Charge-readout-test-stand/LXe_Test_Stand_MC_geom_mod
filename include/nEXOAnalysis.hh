@@ -174,6 +174,8 @@ private:
   G4double fOPX[MAXOPNUM];
   G4double fOPY[MAXOPNUM];
   G4double fOPZ[MAXOPNUM];
+  G4double fOPT[MAXOPNUM];
+
   G4int fNTE;
   G4double fTEEnergy[MAXTENUM];
   G4double fTEX[MAXTENUM];
