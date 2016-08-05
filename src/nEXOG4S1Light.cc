@@ -338,8 +338,10 @@ nEXOG4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
    	      ElectricField = aMatTable->GetConstProperty("ELECTRICFIELD");
 	   }
 	  else 	{
-	      ElectricField =  nEXOAnalysis::GetInstance()->GetEField(x1[0], x1[1], x1[2]); }
- GlobalFields = true; }
+	      ElectricField =  nEXOAnalysis::GetInstance()->GetEField(x1[0], x1[1], x1[2]); 
+            }
+          GlobalFields = true; 
+        }
         else {
           if ( x1[2] < WIN && x1[2] > TOP && Phase == kStateGas )
             ElectricField = aMatTable->
@@ -901,6 +903,14 @@ nEXOG4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	    energ = aMatTable->sites[i].energy;
 	    t0 = aMatTable->sites[i].time_initial;
 	    t1 = aMatTable->sites[i].time_final;
+
+            if (nEXOAnalysis::GetInstance()->GetfEfieldhist() != 0) {
+              ElectricField = nEXOAnalysis::GetInstance()->GetEField(
+                aMatTable->sites[i].pos_x, 
+                aMatTable->sites[i].pos_y, 
+                aMatTable->sites[i].pos_z 
+              ); 
+            }
 	    
 	    //if site is small enough, override the Doke/Birks' model with
 	    //Thomas-Imel, but not if we're dealing with super-high energy 
