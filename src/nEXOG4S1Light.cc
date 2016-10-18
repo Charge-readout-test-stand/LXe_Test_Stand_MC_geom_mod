@@ -910,6 +910,7 @@ nEXOG4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
                 aMatTable->sites[i].pos_y, 
                 aMatTable->sites[i].pos_z 
               ); 
+              ElectricField = fabs((1e3*ElectricField)/(kilovolt/cm));
             }
 	    
 	    //if site is small enough, override the Doke/Birks' model with
@@ -1248,7 +1249,8 @@ nEXOG4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         // not create the particle object for thermalelectron 
         delete aQuantum;
         if(nEXOAnalysis::GetInstance()->GetSaveTE()==1)
-          nEXOAnalysis::GetInstance()->AddThermalElectron(aSecondaryPosition, aSecondaryTime);
+          //nEXOAnalysis::GetInstance()->AddThermalElectron(aSecondaryPosition, aSecondaryTime);
+          nEXOAnalysis::GetInstance()->AddThermalElectron(aSecondaryPosition, ElectricField);
       } else {
 	        G4Track * aSecondaryTrack = 
 		      new G4Track(aQuantum,aSecondaryTime,aSecondaryPosition);
