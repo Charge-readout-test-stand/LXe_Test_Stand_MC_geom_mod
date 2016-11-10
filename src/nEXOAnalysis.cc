@@ -82,8 +82,8 @@ bool nEXOAnalysis::LoadEFieldHist(TString EFieldHistName)
 {
   fFile = new TFile(EFieldHistName);
   cout << "Name of file " << EFieldHistName << endl;
-  fEfieldhist = (TH2D*) fFile->Get("Efieldhist");
-  if (fEfieldhist == 0) {
+  fEFieldHist = (TH2D*) fFile->Get("EFfieldfist");
+  if (fEFieldHist == 0) {
     cout << "E field hist not found" << endl;
     return false;
   }
@@ -94,17 +94,18 @@ bool nEXOAnalysis::LoadEFieldHist(TString EFieldHistName)
 
 double nEXOAnalysis::GetEField(double x, double y, double z)
 {
-  if (fEfieldhist == 0) {
+  if (fEFieldHist == 0) {
     cout << "E FIELD HIST NOT FOUND" << endl;
     return 0;
    }
   else {
   double rho = sqrt(x*x + y*y);//in mm
-  double iBin = fEfieldhist->FindBin(rho,z);
-  double BinContent = fEfieldhist->GetBinContent(iBin)*volt/cm;
-  //if (BinContent == 0) {
-    //cout << "E field is 0 rho =  " << rho <<  " z = " << z << endl;
-  // }
+  double iBin = fEFieldHist->FindBin(rho,z);
+  double BinContent = fEFieldHist->GetBinContent(iBin)*volt/cm;
+  if ( ( z>= 0.0)  && (z < 18.16) && (rho < 50) && BinContent/(volt/cm) <1e-6) {
+    cout << "E field is " << BinContent/(volt/cm) << " rho =  " << rho <<  " z = " << z << endl;
+    //BinContent = 936.12*volt/cm; 
+  }
   return BinContent;
   //cout << "E Field " << GetEField(1, 1, 1) << endl; 
   }
@@ -133,7 +134,7 @@ nEXOAnalysis::nEXOAnalysis()
   fRootTree = NULL;
   fRootFileName = "output.root";
   fRootTreeName = "tree";
-  fEfieldhist = 0;
+  fEFieldHist = 0;
 
   ResetTreeVariables();
   fSubEventNumber = 0; 
@@ -360,7 +361,12 @@ void nEXOAnalysis::SteppingAction(const G4Step* step)
     {
       if(step->GetTrack()->GetDefinition() == nEXOG4ThermalElectron::ThermalElectron() && step->GetTrack()->GetCurrentStepNumber() == 1)
       {
-        G4cout << "nEXOAnalysis::SteppingAction() adding thermal electron --  WARNING -- WHY?!?!?!" << G4endl; 
+        static bool haveWarned = false; 
+        if (!haveWarned) {
+            G4cout << "nEXOAnalysis::SteppingAction() adding thermal electron --  WARNING -- WHY ARE WE HERE?!?!?!" << G4endl; 
+            G4cout << "this is your only warning!" << G4endl;
+            haveWarned = true; 
+        }
         G4int nTE = fNTE;
         G4double energy = step->GetTrack()->GetKineticEnergy()/eV;
         G4double TEX = (preStepPoint->GetPosition()).getX()/mm;
@@ -476,6 +482,7 @@ void nEXOAnalysis::AddThermalElectron(G4ThreeVector pos, G4double eTime) {
   fTEZ[fNTE] = pos[2];
   fTET[fNTE] = eTime;
   fNTE++;
+  if (fNTE>=MAXTENUM) G4cout << "fNTE>=MAXTENUM: " << fNTE << " >= " << MAXTENUM << G4endl;
 }
 
 void nEXOAnalysis::AddOpticalPhoton(G4ThreeVector pos, G4double eTime) {
@@ -485,6 +492,7 @@ void nEXOAnalysis::AddOpticalPhoton(G4ThreeVector pos, G4double eTime) {
   fOPZ[fNOP] = pos[2];
   fOPT[fNOP] = eTime;
   fNOP++;
+  if (fNOP>=MAXOPNUM) G4cout << "fNOP>=MAXOPNUM: " << fNOP << " >= " << MAXOPNUM << G4endl;
 }
 
 void nEXOAnalysis::ResetTreeVariables(void)

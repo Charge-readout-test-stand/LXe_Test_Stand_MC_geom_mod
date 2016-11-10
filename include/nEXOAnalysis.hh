@@ -53,8 +53,8 @@
 #include "nEXOSimplePhysVolManager.hh"
 #include "nEXOG4ThermalElectron.hh"
 
-const int MAXTENUM = 300000;
-const int MAXOPNUM = 300000;
+const int MAXTENUM = 10000000;
+const int MAXOPNUM = 10000000;
 const int MAXDEPNUM = 200000;
 
 class nEXOAnalysis
@@ -119,7 +119,7 @@ public:
   G4bool GetIsNewSubEvent() { return fIsNewSubEvent; }
 
   bool LoadEFieldHist(TString EFieldHistName);
-  TH2D* GetfEfieldhist() { return fEfieldhist; }
+  TH2D* GetEFieldHist() { return fEFieldHist; }
 
 private:
   nEXOAnalysis();
@@ -134,7 +134,7 @@ private:
   TFile* fRootFile; 
   TTree* fRootTree;
   TFile* fFile;
-  TH2D* fEfieldhist;
+  TH2D* fEFieldHist;
 private:
   
   G4int fEventNumber;

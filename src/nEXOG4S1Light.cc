@@ -334,7 +334,7 @@ nEXOG4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
         G4double ElectricField, FieldSign; //for field quenching of S1
         G4bool GlobalFields = false;
         if ( !WIN && !TOP && !ANE && !SRF && !GAT && !CTH && !BOT && !PMT ) {
-          if (nEXOAnalysis::GetInstance()->GetfEfieldhist() == 0) {
+          if (nEXOAnalysis::GetInstance()->GetEFieldHist() == 0) {
    	      ElectricField = aMatTable->GetConstProperty("ELECTRICFIELD");
 	   }
 	  else 	{
@@ -904,7 +904,7 @@ nEXOG4S1Light::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 	    t0 = aMatTable->sites[i].time_initial;
 	    t1 = aMatTable->sites[i].time_final;
 
-            if (nEXOAnalysis::GetInstance()->GetfEfieldhist() != 0) {
+            if (nEXOAnalysis::GetInstance()->GetEFieldHist() != 0) {
               ElectricField = nEXOAnalysis::GetInstance()->GetEField(
                 aMatTable->sites[i].pos_x, 
                 aMatTable->sites[i].pos_y, 
